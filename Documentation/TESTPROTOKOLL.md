@@ -367,3 +367,44 @@ Christoph bestätigte, dass die semantischen Bezeichnungen und Flächengrenzen k
 Christoph bestätigte auf der Quest 3, dass Labeldarstellung, Würfel, Schild, Flächenwechsel und bestehende Controllerinteraktion weiterhin vollständig funktionieren.
 
 **Ergebnis: BESTANDEN – MEILENSTEIN 5 ABGESCHLOSSEN**
+
+### Test 012 – Unabhängige Template- und Git-Erstellung
+
+| Feld | Eintrag |
+|---|---|
+| Datum | 2026-09-15, ca. 15:48–16:34 CEST |
+| Branch | `feature/reusable-template` |
+| Ausgangscommit | `06389f2` (Merge von Pull Request #5) |
+| Template | `com.christophdorn.template.quest-mr-foundation`, Version `0.1.0` |
+| Unity-Version | 6000.3.24f1 |
+| Unabhängiges Projekt | `E:\GitHub\QuestMRFoundationSmokeTest` |
+| GitHub-Repository | `beewater66-source/QuestMRFoundationSmokeTest`, privat |
+| Testarten | Bereinigter Template-Export, neue Projekt-/GitHub-Erstellung, strikte Projektprüfung, Play Mode und Android-Build |
+| Ausgeführt von | Template-Erzeugung, technische Prüfung, Tests und Build: Codex; Git-/Template-Ziel und Abnahmekriterien: Christoph Dorn |
+
+**Geprüft und umgesetzt**
+
+- Das Template enthält `Assets`, `Packages` und `ProjectSettings`, jedoch keine Git-Historie und keine Unity-Caches.
+- Der endgültige Export ist rund 3,16 MB groß; der verworfene erste Direktexport war wegen enthaltener `Library`-Artefakte rund 202 MB groß.
+- Persönliche Unity-Cloud-Daten und die Package-ID von QuestTableLab werden im temporären Exportstand neutralisiert.
+- Die vorbereiteten leeren Projektordner bleiben durch `.gitkeep` erhalten.
+- Unity erstellte das neue Projekt, den lokalen Git-Stand und das private GitHub-Repository in einem Vorgang.
+- `main`, `origin/main`, `.gitignore`, Initial Commit `76a2969` und erster Push waren anschließend vorhanden.
+- In Git wurden keine Dateien aus `Library` oder `Temp` erfasst.
+
+**Automatisiertes Ergebnis**
+
+- Strikte Prüfung des bereinigten Template-Stands: 0 Fehler, 0 Warnungen.
+- Strikte Prüfung des neu erzeugten Projekts: 0 Fehler, 0 Warnungen.
+- 16 von 16 Play-Mode-Tests bestanden in 8,83 Sekunden.
+- Android-Build `build_2e4e76fbb33a` erfolgreich in rund 539 Sekunden.
+- Build-Ergebnis: 0 Fehler und 4 bekannte Hinweise.
+- APK-Größe: 65.071.126 Byte, rund 65 MB.
+
+Die Hinweise betreffen das empfohlene Oculus-Touch-Interaktionsprofil, eine niedrigere OpenXR-Patchversion und die erwartete Deaktivierung der Editor-Pipeline im Player-Build. Sie verhindern den Android-Build nicht.
+
+**Abgrenzung des Nachweises**
+
+Die separate Smoke-Test-APK wurde nicht zusätzlich auf der Quest 3 installiert. Dieser Test weist die unabhängige Erzeugung, Versionsverwaltung, Kompilierbarkeit, Play-Mode-Testbasis und Android-Build-Fähigkeit des Templates nach. Die räumliche Gerätefunktion des enthaltenen Ausgangsstands wurde zuvor mit QuestTableLab praktisch bestätigt.
+
+**Ergebnis: BESTANDEN – MEILENSTEIN 6 TECHNISCH ABGESCHLOSSEN**
