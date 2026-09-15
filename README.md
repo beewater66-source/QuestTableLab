@@ -39,13 +39,14 @@ Der Schwerpunkt liegt auf einer verständlichen, erweiterbaren technischen Basis
 | 2 | Erste Quest-App: Build, Installation, Passthrough und sichtbarer virtueller Inhalt | Abgeschlossen |
 | 3 | Manuelle Platzierung: Controller-Strahl, Verschieben, Fußbodenplatzierung und Reset | Abgeschlossen |
 | 4 | Semantische Raumerkennung: `TABLE` und anschließend `WALL_FACE` über MRUK | Abgeschlossen |
-| 5 | Konfigurierbare Zuordnung semantischer Kategorien und Abschluss der Template-Grundlage | In Arbeit |
+| 5 | Konfigurierbare Zuordnung semantischer Kategorien und virtueller Darstellung | Abgeschlossen |
+| 6 | Bereinigtes, wiederverwendbares Unity-Template und unabhängiger Template-Test | Geplant |
 
 ## Aktueller Stand
 
-Stand: **15. September 2026, 15:21 CEST**
+Stand: **15. September 2026, 15:47 CEST**
 
-Die Meilensteine 0 bis 4 sind auf der Meta Quest 3 praktisch bestanden:
+Die Meilensteine 0 bis 5 sind auf der Meta Quest 3 praktisch bestanden:
 
 - Unity **6000.3.24f1** mit Universal Render Pipeline
 - Android/ARM64, OpenXR und Meta-XR-Pakete
@@ -62,7 +63,7 @@ Die Meilensteine 0 bis 4 sind auf der Meta Quest 3 praktisch bestanden:
 - aktivierte Scene-Unterstützung mit automatischer Berechtigungsanfrage beim Start
 - aktiviertes Application SpaceWarp als optionale Meta-Performancefunktion
 - `OVROverlayCanvas` für das raumfeste Schild mit getrennten Render-Layern
-- 15 bestandene Play-Mode-Tests
+- 16 bestandene Play-Mode-Tests
 - erfolgreiche Android-Build und Installation der ersten MRUK-/Scene-API-Fassung
 - automatische Suche nach dem nächstgelegenen geeigneten `TABLE`-Volumen
 - verständliche Statusmeldungen für fehlende Berechtigung, fehlendes Space Setup und fehlendes Tisch-Label
@@ -71,8 +72,10 @@ Die Meilensteine 0 bis 4 sind auf der Meta Quest 3 praktisch bestanden:
 - Controller-Replatzierung von Würfel und Schild mit Begrenzung auf die jeweils erkannte Tisch- beziehungsweise Wandfläche
 - direkter Ankerwechsel per Drag-and-Drop: Beim Ziehen auf eine andere erkannte Fläche übernimmt das Objekt automatisch deren `TABLE`- beziehungsweise `WALL_FACE`-Anker
 - ein- und ausschaltbare Diagnoseansicht mit farbigen Flächengrenzen und Bezeichnungen aller erkannten semantischen Raumanker
+- zentrales `SemanticLabelProfile` als ScriptableObject für Anzeigename, Farbe sowie optionale Icons und Content-Prefabs
+- gemeinsame `TABLE`-Konfiguration für Diagnoseansicht und virtuellen Würfel ohne Änderung der Erkennungslogik
 
-Meilenstein 4 wurde über Pull Request #4 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-label-mapping`. Tisch- und Wandplatzierung, direkter Flächenwechsel sowie die per rechtem Stick-Klick schaltbare Labelansicht sind auf der Quest 3 praktisch bestätigt.
+Meilenstein 4 wurde über Pull Request #4 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-label-mapping`. Tisch- und Wandplatzierung, direkter Flächenwechsel, die per rechtem Stick-Klick schaltbare Labelansicht und das konfigurierbare Labelprofil sind auf der Quest 3 praktisch bestätigt. Der Pull Request für Meilenstein 5 steht noch aus.
 
 ## Technische Basis
 
@@ -98,10 +101,13 @@ Assets/App/
 ├── Prefabs/
 ├── Scenes/
 ├── Scripts/
+├── Settings/
 └── UI/
 ```
 
 Von Unity oder XR-Paketen erzeugte Inhalte bleiben davon getrennt. Temporäre lokale Verzeichnisse wie `Library`, `Temp` und `Logs` werden nicht mit Git versioniert.
+
+Das Asset `Assets/App/Settings/QuestTableLabSemanticLabels.asset` ist die zentrale semantische Konfiguration. Jeder Eintrag kann ein MRUK-Label mit Anzeigename und Farbe sowie optional mit einem Icon und einem Content-Prefab verbinden. Damit lassen sich Darstellungen ergänzen oder ändern, ohne die MRUK-Erkennung umzubauen.
 
 ## Arbeitsweise
 
@@ -123,6 +129,13 @@ Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen se
 - [Technische Entscheidungen](Documentation/ENTSCHEIDUNGEN.md)
 - [Testprotokoll](Documentation/TESTPROTOKOLL.md)
 
+## Bekannte Grenzen
+
+- Die Anwendung verwendet die semantischen Anker des zuvor eingerichteten Quest-Raums. Das ist eine Raumklassifikation durch MRUK und keine allgemeine visuelle Erkennung beliebiger realer Gegenstände.
+- Der aktuelle Funktionsnachweis bindet den Würfel an `TABLE` und das Schild an `WALL_FACE`. Weitere Profileinträge konfigurieren ihre Darstellung, erzeugen aber noch nicht automatisch neue Szeneninhalte.
+- Fehlende oder falsch zugewiesene Raumlabels müssen im Quest Space Setup korrigiert beziehungsweise durch einen verständlichen Fallback behandelt werden.
+- Editor- und Simulatortests ergänzen die Entwicklung, ersetzen aber nicht den praktischen Test auf der Quest 3.
+
 ## Nächster Schritt
 
-Die ein- und ausschaltbare Visualisierung erkannter Raumlabels und ihrer Flächengrenzen wurde auf der Quest 3 praktisch bestätigt. Als Nächstes folgt die konfigurierbare Zuordnung virtueller Inhalte zu Labels wie `TABLE`, `COUCH` und `SCREEN`.
+Meilenstein 5 ist praktisch bestanden und dokumentiert. Als Nächstes wird in Meilenstein 6 aus dem stabilen Projektstand ein bereinigtes Unity-Template erstellt und über ein neues, unabhängiges Testprojekt verifiziert.

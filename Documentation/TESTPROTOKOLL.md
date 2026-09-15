@@ -342,3 +342,28 @@ Christoph bestätigte auf der Quest 3, dass Würfel und Schild beim Ziehen auf e
 Christoph bestätigte, dass die semantischen Bezeichnungen und Flächengrenzen korrekt erscheinen und sich durch erneuten Stick-Klick vollständig ausblenden lassen. Die vorhandene Tisch-, Wand- und Controllerinteraktion funktioniert weiterhin.
 
 **Ergebnis: BESTANDEN**
+
+### Test 011 – Konfigurierbares semantisches Labelprofil
+
+| Feld | Eintrag |
+|---|---|
+| Datum | 2026-09-15 |
+| Branch | `feature/semantic-label-mapping` |
+| Zielgerät | Meta Quest 3 |
+| Testarten | Play Mode, Android-Build, Installation sowie Sicht- und Funktionstest im Headset |
+| Ausgeführt von | Implementierung, automatisierte Tests, Build und Installation: Codex; praktische Prüfung: Christoph Dorn |
+
+**Technisches Ergebnis**
+
+- Ein zentrales `SemanticLabelProfile` ordnet MRUK-Labels Anzeigenamen und Farben zu.
+- Optionale Felder für Icon und Content-Prefab ermöglichen spätere Erweiterungen ohne Änderung der Erkennungslogik.
+- Diagnoseansicht und `RoomFixedTestCube` verwenden dieselbe `TABLE`-Konfiguration.
+- 16 von 16 Play-Mode-Tests bestanden.
+- Android-Build `build_f3babb65535c` in 420 Sekunden mit 0 Fehlern und 6 bekannten Warnungen erstellt.
+- APK erfolgreich auf der verbundenen Quest 3 installiert und gestartet.
+
+**Räumliches Ergebnis**
+
+Christoph bestätigte auf der Quest 3, dass Labeldarstellung, Würfel, Schild, Flächenwechsel und bestehende Controllerinteraktion weiterhin vollständig funktionieren.
+
+**Ergebnis: BESTANDEN – MEILENSTEIN 5 ABGESCHLOSSEN**

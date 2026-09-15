@@ -175,9 +175,33 @@ namespace QuestTableLab.Tests.PlayMode
             SemanticLabelVisualizer visualizer = semanticRoom.GetComponent<SemanticLabelVisualizer>();
 
             Assert.That(visualizer, Is.Not.Null);
+            Assert.That(visualizer.Profile, Is.Not.Null,
+                "Label colors and names must come from a reusable profile asset.");
             Assert.That(visualizer.IsVisible, Is.False,
                 "Semantic outlines must remain opt-in so they do not obscure passthrough.");
             Assert.That(GameObject.Find("SemanticLabelVisualization_Runtime"), Is.Null);
+        }
+
+        [UnityTest]
+        public IEnumerator TableCubeUsesConfiguredSemanticProfile()
+        {
+            yield return null;
+
+            GameObject cube = GameObject.Find("RoomFixedTestCube");
+            SemanticContentBinding binding = cube.GetComponent<SemanticContentBinding>();
+            SemanticLabelVisualizer visualizer =
+                Object.FindFirstObjectByType<SemanticLabelVisualizer>();
+
+            Assert.That(binding, Is.Not.Null);
+            Assert.That(binding.Profile, Is.SameAs(visualizer.Profile));
+            Assert.That(binding.SemanticLabel, Is.EqualTo(MRUKAnchor.SceneLabels.TABLE));
+            Assert.That(binding.ApplyProfile(), Is.True);
+            Assert.That(binding.Profile.TryGetEntry(
+                MRUKAnchor.SceneLabels.TABLE,
+                out SemanticLabelProfile.Entry tableEntry), Is.True);
+            Assert.That(tableEntry.DisplayName, Is.EqualTo("TABLE"));
+            Assert.That(tableEntry.Color.b, Is.GreaterThan(tableEntry.Color.r),
+                "The default TABLE content should remain blue.");
         }
 
         [UnityTest]

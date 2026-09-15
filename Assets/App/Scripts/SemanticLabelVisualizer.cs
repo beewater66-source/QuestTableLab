@@ -11,6 +11,7 @@ public sealed class SemanticLabelVisualizer : MonoBehaviour
     [Header("Room data")]
     [SerializeField] private MRUK mruk;
     [SerializeField] private Transform viewer;
+    [SerializeField] private SemanticLabelProfile profile;
 
     [Header("Input")]
     [SerializeField] private OVRInput.Controller controller = OVRInput.Controller.RTouch;
@@ -24,6 +25,7 @@ public sealed class SemanticLabelVisualizer : MonoBehaviour
 
     public bool IsVisible { get; private set; }
     public int VisibleAnchorCount { get; private set; }
+    public SemanticLabelProfile Profile => profile;
 
     private readonly List<Transform> labels = new();
     private GameObject visualizationRoot;
@@ -141,7 +143,7 @@ public sealed class SemanticLabelVisualizer : MonoBehaviour
 
     private void CreateAnchorVisualization(MRUKAnchor anchor, Transform parent)
     {
-        Color color = GetLabelColor(anchor.Label);
+        Color color = profile != null ? profile.GetColor(anchor.Label) : Color.white;
         GameObject anchorRoot = new($"SemanticLabel_{anchor.Label}");
         anchorRoot.transform.SetParent(parent, false);
 
@@ -233,7 +235,9 @@ public sealed class SemanticLabelVisualizer : MonoBehaviour
         labelObject.transform.position = center + anchor.transform.forward * labelSurfaceOffset;
 
         TextMesh text = labelObject.AddComponent<TextMesh>();
-        text.text = anchor.Label.ToString().Replace(", ", "\n");
+        text.text = profile != null
+            ? profile.GetDisplayName(anchor.Label)
+            : anchor.Label.ToString().Replace(", ", "\n");
         text.anchor = TextAnchor.MiddleCenter;
         text.alignment = TextAlignment.Center;
         text.fontSize = 64;
@@ -256,17 +260,6 @@ public sealed class SemanticLabelVisualizer : MonoBehaviour
             name = "Semantic Label Lines (Runtime)"
         };
         return lineMaterial;
-    }
-
-    private static Color GetLabelColor(MRUKAnchor.SceneLabels label)
-    {
-        if ((label & MRUKAnchor.SceneLabels.TABLE) != 0) return new Color(0.15f, 0.65f, 1f, 1f);
-        if ((label & MRUKAnchor.SceneLabels.WALL_FACE) != 0) return new Color(0.75f, 0.35f, 1f, 1f);
-        if ((label & MRUKAnchor.SceneLabels.COUCH) != 0) return new Color(0.2f, 1f, 0.4f, 1f);
-        if ((label & MRUKAnchor.SceneLabels.SCREEN) != 0) return new Color(1f, 0.35f, 0.25f, 1f);
-        if ((label & MRUKAnchor.SceneLabels.FLOOR) != 0) return new Color(0.2f, 1f, 0.9f, 1f);
-        if ((label & MRUKAnchor.SceneLabels.CEILING) != 0) return new Color(1f, 0.85f, 0.2f, 1f);
-        return Color.white;
     }
 
     private void HandleSceneChanged()

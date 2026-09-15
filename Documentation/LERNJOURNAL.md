@@ -74,9 +74,13 @@ Der rechte Controller besitzt einen eindeutigen Zielstrahl. Der Würfel lässt s
 
 MRUK stellt Raumdaten bereit. Die Anwendung erkennt `TABLE`, unterscheidet geometrische Treffer von semantischer Bedeutung und platziert den Würfel relativ zur Tischfläche. Das Schild wird automatisch an einer geeigneten `WALL_FACE` platziert. Beide Objekte lassen sich innerhalb ihrer semantischen Fläche bewegen und beim Ziehen direkt einem anderen passenden Anker zuweisen. Die vollständige Interaktion wurde auf der Quest 3 bestätigt. **Abgeschlossen.**
 
-### Meilenstein 5 – Konfigurierbare Zuordnung und Template-Basis
+### Meilenstein 5 – Konfigurierbare Zuordnung
 
-Semantische Kategorien und virtuelle Inhalte werden über eine verständliche Konfiguration verbunden. Eine per rechtem Stick-Klick schaltbare Diagnoseansicht zeigt bereits die erkannten Kategorien und Flächengrenzen im Raum. Anschließend kann aus dem bereinigten Stand ein wiederverwendbares Template für neue Quest-AR-Projekte entstehen. **In Arbeit.**
+Ein zentrales `SemanticLabelProfile` verbindet MRUK-Kategorien mit Anzeigenamen und Farben. Optionale Felder für Icons und Content-Prefabs bereiten spätere Erweiterungen vor. Diagnoseansicht und zugeordneter Würfel lesen dieselbe `TABLE`-Konfiguration. Die Funktion wurde mit 16 Play-Mode-Tests, Android-Build und Gerätetest bestätigt. **Abgeschlossen.**
+
+### Meilenstein 6 – Wiederverwendbares Template
+
+Der stabile Projektstand wird bereinigt, als Unity-Template aufbereitet und durch ein neues, unabhängiges Testprojekt geprüft. **Geplant.**
 
 ## Zeitlicher Verlauf
 
@@ -110,6 +114,7 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-15 ca. 14:40 | Christoph | Direkten semantischen Flächenwechsel bestätigt | Würfel und Schild übernahmen beim Ziehen auf eine andere passende reale Fläche automatisch den tatsächlich anvisierten `TABLE`- beziehungsweise `WALL_FACE`-Anker. Smoke-Test bestanden. |
 | 2026-09-15 ca. 14:45–15:00 | Christoph | Meilenstein 4 per Pull Request #4 abgeschlossen | Semantische Platzierung in `main` übernommen; beim anschließenden Branchwechsel wurde ein veraltetes lokales `main` erkannt, aktualisiert und der neue Branch kontrolliert mit dem Merge-Stand verbunden. |
 | 2026-09-15 15:00–15:21 | Gemeinsam | Semantische Diagnoseansicht umgesetzt und auf der Quest geprüft | Codex implementierte farbige Grenzen und raumorientierte Labeltexte für MRUK-Anker sowie den Toggle über den rechten Stick-Klick. 15 von 15 Play-Mode-Tests und Android-Build `build_41377d06778d` bestanden; Christoph bestätigte Darstellung und Umschaltung im Headset. |
+| 2026-09-15 15:21–15:47 | Gemeinsam | Konfigurierbares semantisches Labelprofil umgesetzt und geprüft | Codex implementierte das ScriptableObject mit Anzeigename, Farbe sowie optionalem Icon und Content-Prefab und band Diagnoseansicht und Würfel daran. 16 von 16 Play-Mode-Tests sowie Android-Build `build_f3babb65535c` mit 0 Fehlern bestanden; Christoph bestätigte die vollständige Funktion auf der Quest 3. |
 
 ## Zentrale Learnings
 
@@ -119,6 +124,7 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Ein lokaler Commit ist kein vollständiges Rechner-Backup. Erst Push beziehungsweise Publish legt den versionierten Stand zusätzlich auf GitHub ab.
 - Ein Branch ist eine getrennte Entwicklungslinie. Ein Pull Request vergleicht diese Linie mit `main`, ermöglicht eine Prüfung und führt die Änderungen anschließend kontrolliert in den Stamm zusammen.
 - Nach einem Merge kann der abgeschlossene Feature-Branch gelöscht werden; der Inhalt bleibt über `main` und die Historie erhalten.
+- Für ein neues Unity-Projekt darf nicht gleichzeitig ein gleichnamiger leerer Clone vorbereitet werden, wenn Unity selbst über den GitHub-Provider das Repository erstellen soll. Der künftig geplante Ablauf lautet: Repository und Projekt gemeinsam in Unity erzeugen, danach den vorhandenen lokalen Ordner in GitHub Desktop als bestehendes Repository hinzufügen. Dieser Ablauf wird beim nächsten Projekt noch praktisch validiert.
 
 ### Unity- und Quest-Workflow
 
@@ -150,26 +156,26 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Für flächengebundene Interaktion reicht eine semantische Startposition nicht. Jeder neue Controller-Zielpunkt wird in den lokalen Koordinatenraum des erkannten Ankers umgerechnet und dort einschließlich der Objektgröße begrenzt.
 - Zyklisches Umschalten ist bei räumlich verteilten Flächen zwar technisch einfach, aber ohne sichtbare Zuordnung unverständlich. Ein direkter Scene-API-Raycast verbindet die Controllerhandlung stattdessen mit der tatsächlich anvisierten realen Fläche.
 - Eine semantische Diagnoseebene sollte von der eigentlichen Objektlogik getrennt bleiben. Dadurch können erkannte Kategorien und Grenzen sichtbar gemacht werden, ohne Platzierung oder Interaktion zu verändern.
+- Ein ScriptableObject eignet sich als gemeinsame semantische Quelle für Diagnoseansicht und virtuelle Inhalte. Anzeigenamen, Farben und spätere Icons oder Prefabs lassen sich dadurch erweitern, ohne die Erkennungslogik umzubauen.
 
 ## Aktueller Stand
 
 Erreicht:
 
-- Meilensteine 0 bis 4 vollständig umgesetzt, zuletzt per Pull Request #4 gemergt und praktisch nachgewiesen.
-- Meilenstein 5 mit schaltbarer Visualisierung aller erkannten semantischen Raumanker begonnen.
-- 15 Play-Mode-Tests bestanden.
-- Android-Build `build_41377d06778d` mit 0 Fehlern erstellt und auf der Quest installiert.
+- Meilensteine 0 bis 5 vollständig umgesetzt und praktisch nachgewiesen; der Pull Request für Meilenstein 5 steht noch aus.
+- Schaltbare Visualisierung aller erkannten semantischen Raumanker und zentrale, erweiterbare Labelkonfiguration umgesetzt.
+- 16 Play-Mode-Tests bestanden.
+- Android-Build `build_f3babb65535c` mit 0 Fehlern erstellt, auf der Quest installiert und praktisch bestätigt.
 - Controller-Strahl, Bewegung, Bodenplatzierung und Reset funktionieren.
 - README, Lernjournal, Entscheidungen und Testprotokoll auf den allgemeinen Template-/Lernzweck ausgerichtet.
 
 Noch offen:
 
-- Virtuelle Inhalte über eine Konfiguration Labels wie `TABLE`, `COUCH` und `SCREEN` zuweisen.
 - Den abgeschlossenen Projektstand als bereinigtes, wiederverwendbares Unity-Template aufbereiten.
 
 ## Nächster einzelner Lernschritt
 
-Eine Konfiguration einführen, die semantische Labels wie `TABLE`, `COUCH` und `SCREEN` nachvollziehbar mit virtuellen Inhalten verbindet.
+Meilenstein 5 per Pull Request in `main` übernehmen und anschließend für Meilenstein 6 einen eigenen Template-Branch beginnen.
 
 ## Vorlage für neue Einträge
 
