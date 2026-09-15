@@ -41,3 +41,67 @@ Für jeden Test werden Datum, Git-Commit, Unity-Version, Zielgerät, Testart, er
 **Ergebnis: BESTANDEN**
 
 Der vollständige Weg von der Unity-Szene über Android-Build und Installation bis zur sichtbaren Mixed-Reality-Ausgabe auf der Quest 3 ist nachgewiesen. Raumfeste Platzierung war nicht Gegenstand dieses Tests.
+
+### Test 002 – Raumfester Würfel und World-Space-Beschriftung
+
+| Feld | Eintrag |
+|---|---|
+| Start | 2026-09-15 09:13 CEST |
+| Sichtprüfung bestätigt | 2026-09-15 09:28 CEST |
+| Git-Branch | `feature/table-cube-placement` |
+| Ausgangscommit | `d93dd39` (Merge von Pull Request #1) |
+| Unity-Version | 6000.3.24f1 |
+| Zielgerät | Meta Quest 3 |
+| Betriebssystem | Meta Horizon OS 2.7 |
+| Testart | Inkrementeller Development-Build, Installation, technischer Laufzeittest und Sichtprüfung im Headset |
+| Ausgeführt von | Technische Umsetzung und Auslieferung: Codex; Sichtprüfung und räumliche Bewertung: Christoph Dorn |
+
+**Erwartetes Ergebnis**
+
+- Ein 20 cm großer Würfel erscheint vor dem Startpunkt.
+- Der Würfel bleibt bei langsamen und schnellen Kopfbewegungen an derselben Stelle im Raum.
+- Die Testmeldung ist nicht mehr an die Kamera gekoppelt und steht lesbar über dem Würfel.
+
+**Beobachtetes Ergebnis**
+
+- Der Würfel wurde als Szenenobjekt bei `(0, 0.9, 1.5)` angelegt.
+- Christoph bestätigte, dass der Würfel auch bei schnellen Kopfbewegungen stabil im Raum bleibt.
+- Der erste Beschriftungsversuch lag fast einen Meter unter dem Würfel und war zu klein.
+- Ursache war die weiterhin auf Y = 0 stehende `Anchored Position` des Root-Canvas.
+- Nach der Korrektur liegt das Panelzentrum bei `(0, 1.2, 1.5)` und die Schildbreite beträgt ungefähr 57 cm.
+- Christoph bestätigte Position, Raumstabilität und Lesbarkeit der korrigierten Fassung.
+- Alle drei Android-Builds wurden mit 0 Fehlern und den bereits bekannten 7 Hinweisen abgeschlossen.
+
+**Ergebnis: BESTANDEN**
+
+Die raumfeste Darstellung eines einfachen virtuellen Objekts und einer zugeordneten Beschriftung ist auf der Quest 3 praktisch nachgewiesen. Eine semantische Tischfläche oder ein persistenter Raumanker wird in diesem Test noch nicht verwendet.
+
+### Test 003 – Automatisierte Play-Mode-Prüfung
+
+| Feld | Eintrag |
+|---|---|
+| Ausgeführt | 2026-09-15 10:10–10:16 CEST |
+| Git-Branch | `feature/table-cube-placement` |
+| Ausgangscommit | `102e607` (`feat: add room-fixed cube and label`) |
+| Unity-Version | 6000.3.24f1 |
+| Testumgebung | Unity Editor, Play Mode |
+| Fast Enter Play Mode | Domain Reload und Scene Reload deaktiviert |
+| Ausgeführt von | Testentwurf, Implementierung und Ausführung: Codex; Fast-Reload-Entscheidung und manuelle Schildanpassung: Christoph Dorn |
+
+**Geprüft**
+
+- `RoomFixedTestCube` existiert auf der Szenenwurzel und besitzt die erwartete Pose und Skalierung.
+- `HelloPanel` existiert auf der Szenenwurzel, verwendet einen World-Space-Canvas und bleibt oberhalb sowie in visueller Nähe des Würfels.
+
+**Beobachteter Lernverlauf**
+
+- Ein erster Compilerfehler im Vektorvergleich wurde korrigiert.
+- Ein erster Lauf wurde durch einen Speichern-Dialog blockiert und abgebrochen.
+- Ein Lauf ohne explizites Laden von `SampleScene` schlug mit 0 von 2 Tests fehl, weil der Test Runner eine eigene leere Testszene verwendet.
+- Nach Wiederherstellung des expliziten Szenenladens bestand zunächst 1 von 2 Tests.
+- Die verbleibende Abweichung stammte aus Christophs bewusster manueller Schildpositionierung. Der Test wurde auf die fachliche Anforderung „visuell nahe am Würfel“ ausgerichtet.
+- Abschließend bestanden 2 von 2 Tests in 1,35 Sekunden.
+
+**Ergebnis: BESTANDEN**
+
+Milestone 2 besitzt nun neben dem praktischen Quest-Nachweis eine schnelle automatisierte Editor-Prüfung.
