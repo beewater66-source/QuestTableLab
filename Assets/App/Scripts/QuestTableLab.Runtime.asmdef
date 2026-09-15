@@ -1,8 +1,8 @@
 {
-  "name": "QuestTableLab.PlayModeTests",
-  "rootNamespace": "QuestTableLab.Tests.PlayMode",
+  "name": "QuestTableLab.Runtime",
+  "rootNamespace": "QuestTableLab",
   "references": [
-    "QuestTableLab.Runtime"
+    "Oculus.VR"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
@@ -12,8 +12,5 @@
   "autoReferenced": true,
   "defineConstraints": [],
   "versionDefines": [],
-  "noEngineReferences": false,
-  "optionalUnityReferences": [
-    "TestAssemblies"
-  ]
+  "noEngineReferences": false
 }
