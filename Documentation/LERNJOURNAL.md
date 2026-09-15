@@ -1,6 +1,6 @@
 # Lernjournal: QuestTableLab als AR-/MR-Grundlage
 
-Stand: 2026-09-15 15:21 CEST
+Stand: 2026-09-15 16:34 CEST
 Projekt: QuestTableLab  
 Zielgerät: Meta Quest 3
 
@@ -80,7 +80,7 @@ Ein zentrales `SemanticLabelProfile` verbindet MRUK-Kategorien mit Anzeigenamen 
 
 ### Meilenstein 6 – Wiederverwendbares Template
 
-Der stabile Projektstand wird bereinigt, als Unity-Template aufbereitet und durch ein neues, unabhängiges Testprojekt geprüft. **Geplant.**
+Der stabile Projektstand wurde als **Quest MR Foundation** aufbereitet. Ein unabhängiges Projekt wurde direkt aus dem Template und gleichzeitig mit lokalem Git- sowie privatem GitHub-Repository erzeugt. 16 Play-Mode-Tests und ein Android-Build bestanden. **Technisch abgeschlossen; Pull Request, Merge und Release-Tag stehen noch aus.**
 
 ## Zeitlicher Verlauf
 
@@ -115,6 +115,9 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-15 ca. 14:45–15:00 | Christoph | Meilenstein 4 per Pull Request #4 abgeschlossen | Semantische Platzierung in `main` übernommen; beim anschließenden Branchwechsel wurde ein veraltetes lokales `main` erkannt, aktualisiert und der neue Branch kontrolliert mit dem Merge-Stand verbunden. |
 | 2026-09-15 15:00–15:21 | Gemeinsam | Semantische Diagnoseansicht umgesetzt und auf der Quest geprüft | Codex implementierte farbige Grenzen und raumorientierte Labeltexte für MRUK-Anker sowie den Toggle über den rechten Stick-Klick. 15 von 15 Play-Mode-Tests und Android-Build `build_41377d06778d` bestanden; Christoph bestätigte Darstellung und Umschaltung im Headset. |
 | 2026-09-15 15:21–15:47 | Gemeinsam | Konfigurierbares semantisches Labelprofil umgesetzt und geprüft | Codex implementierte das ScriptableObject mit Anzeigename, Farbe sowie optionalem Icon und Content-Prefab und band Diagnoseansicht und Würfel daran. 16 von 16 Play-Mode-Tests sowie Android-Build `build_f3babb65535c` mit 0 Fehlern bestanden; Christoph bestätigte die vollständige Funktion auf der Quest 3. |
+| 2026-09-15 ca. 15:48–16:05 | Codex, von Christoph delegiert | Template erstmals erzeugt und technisch untersucht | Der direkte Export enthielt versehentlich Unity-Caches und war rund 202 MB groß. Ein sauberer Export aus ausschließlich versionierbaren Projektbestandteilen reduzierte das Archiv auf rund 3,16 MB. Platzhalterdateien sichern leere Strukturordner in Git und im Template. |
+| 2026-09-15 ca. 16:05–16:18 | Codex, von Christoph delegiert | Template-Identität neutralisiert und ersten unabhängigen Versuch ausgewertet | Der erste Test zeigte, dass Unity persönliche Cloud-Zuordnung und die explizite Android Package-ID sonst übernimmt. Diese Angaben werden nun nur im temporären Exportstand neutralisiert; das Ausgangsprojekt behält seine korrekte Identität. |
+| 2026-09-15 ca. 16:18–16:34 | Codex, von Christoph delegiert | GitHub-Erstellung und Template-Abnahme unabhängig nachgewiesen | Unity erstellte `QuestMRFoundationSmokeTest`, lokales Git und das private GitHub-Repository gemeinsam. Initial Commit `76a2969` wurde gepusht. 16 von 16 Play-Mode-Tests sowie Android-Build `build_2e4e76fbb33a` mit 0 Fehlern bestanden. |
 
 ## Zentrale Learnings
 
@@ -124,7 +127,11 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Ein lokaler Commit ist kein vollständiges Rechner-Backup. Erst Push beziehungsweise Publish legt den versionierten Stand zusätzlich auf GitHub ab.
 - Ein Branch ist eine getrennte Entwicklungslinie. Ein Pull Request vergleicht diese Linie mit `main`, ermöglicht eine Prüfung und führt die Änderungen anschließend kontrolliert in den Stamm zusammen.
 - Nach einem Merge kann der abgeschlossene Feature-Branch gelöscht werden; der Inhalt bleibt über `main` und die Historie erhalten.
-- Für ein neues Unity-Projekt darf nicht gleichzeitig ein gleichnamiger leerer Clone vorbereitet werden, wenn Unity selbst über den GitHub-Provider das Repository erstellen soll. Der künftig geplante Ablauf lautet: Repository und Projekt gemeinsam in Unity erzeugen, danach den vorhandenen lokalen Ordner in GitHub Desktop als bestehendes Repository hinzufügen. Dieser Ablauf wird beim nächsten Projekt noch praktisch validiert.
+- Für ein neues Unity-Projekt darf nicht gleichzeitig ein gleichnamiger leerer Clone vorbereitet werden, wenn Unity selbst über den GitHub-Provider das Repository erstellen soll. Der praktisch bestätigte Ablauf lautet: Repository und Projekt gemeinsam in Unity erzeugen, danach den vorhandenen lokalen Ordner in GitHub Desktop als bestehendes Repository hinzufügen.
+- GitHub und Unity Cloud sind getrennte Dienste. Ein Projekt kann direkt mit GitHub angelegt werden, während Unity Cloud bewusst deaktiviert bleibt.
+- Leere Ordner werden von Git nicht versioniert. Kleine `.gitkeep`-Dateien erhalten die vorbereitete `Art`-, `Prefabs`-, `UI`- und `StreamingAssets`-Struktur im Template.
+- Ein Template muss in einem vollständig neuen Projekt geprüft werden. Erst dabei wurden übernommene Cloud- und Package-Identitäten sowie der zu große Cache-Export zuverlässig sichtbar.
+- Das Custom Template setzt die Android Package-ID nicht automatisch passend zum neuen Projektnamen. Deshalb enthält es einen gut sichtbaren gültigen Platzhalter, der nach jeder Projekterstellung verpflichtend ersetzt wird.
 
 ### Unity- und Quest-Workflow
 
@@ -162,20 +169,22 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 
 Erreicht:
 
-- Meilensteine 0 bis 5 vollständig umgesetzt und praktisch nachgewiesen; der Pull Request für Meilenstein 5 steht noch aus.
+- Meilensteine 0 bis 5 vollständig umgesetzt, praktisch nachgewiesen und in `main` übernommen.
+- Meilenstein 6 technisch abgeschlossen: Template `Quest MR Foundation` 0.1.0 erstellt und in einem unabhängigen GitHub-Projekt geprüft.
 - Schaltbare Visualisierung aller erkannten semantischen Raumanker und zentrale, erweiterbare Labelkonfiguration umgesetzt.
 - 16 Play-Mode-Tests bestanden.
 - Android-Build `build_f3babb65535c` mit 0 Fehlern erstellt, auf der Quest installiert und praktisch bestätigt.
+- Unabhängiger Template-Build `build_2e4e76fbb33a` mit 0 Fehlern erstellt; die separate Test-APK wurde nicht erneut auf der Quest installiert.
 - Controller-Strahl, Bewegung, Bodenplatzierung und Reset funktionieren.
 - README, Lernjournal, Entscheidungen und Testprotokoll auf den allgemeinen Template-/Lernzweck ausgerichtet.
 
 Noch offen:
 
-- Den abgeschlossenen Projektstand als bereinigtes, wiederverwendbares Unity-Template aufbereiten.
+- Template-Branch committen, per Pull Request in `main` übernehmen und den Abschlussstand mit `v0.1.0` markieren.
 
 ## Nächster einzelner Lernschritt
 
-Meilenstein 5 per Pull Request in `main` übernehmen und anschließend für Meilenstein 6 einen eigenen Template-Branch beginnen.
+Den vorbereiteten Template-Stand committen und den Pull Request für Meilenstein 6 erstellen.
 
 ## Vorlage für neue Einträge
 

@@ -2,7 +2,7 @@
 
 QuestTableLab ist meine Lern- und Testumgebung für Mixed Reality auf der Meta Quest 3. In diesem Projekt erarbeite ich mir einen nachvollziehbaren Grundaufbau für weitere AR-/MR-Projekte: Git und GitHub, Unity und OpenXR, Passthrough, räumliche Interaktion, semantische Raumlabels und später eine allgemein nutzbare Grundlage für Objektzuordnungen.
 
-Wenn diese Grundlage stabil ist, möchte ich daraus ein bereinigtes und wiederverwendbares Template für neue AR-/MR-Projekte ableiten.
+Aus dem stabilen Projektstand habe ich das bereinigte und wiederverwendbare Template **Quest MR Foundation** für neue AR-/MR-Projekte abgeleitet.
 
 ## Meine Ausgangslage
 
@@ -19,7 +19,7 @@ Repository, Branches, kleine Commits, Pull Requests, Dokumentation und überprü
 
 In der ersten Ausbaustufe kann ich durch Passthrough meine reale Umgebung sehen, virtuelle Inhalte raumfest darstellen und einen Würfel mit dem rechten Controller bewegen, auf dem kalibrierten Fußboden platzieren und zurücksetzen.
 
-Darauf aufbauend möchte ich:
+Darauf aufbauend habe ich:
 
 1. semantische Labels der Quest-Raumdaten auslesen,
 2. einen Würfel automatisch einer Fläche mit dem Label `TABLE` zuweisen,
@@ -40,13 +40,13 @@ Der Schwerpunkt liegt auf einer verständlichen, erweiterbaren technischen Basis
 | 3 | Manuelle Platzierung: Controller-Strahl, Verschieben, Fußbodenplatzierung und Reset | Abgeschlossen |
 | 4 | Semantische Raumerkennung: `TABLE` und anschließend `WALL_FACE` über MRUK | Abgeschlossen |
 | 5 | Konfigurierbare Zuordnung semantischer Kategorien und virtueller Darstellung | Abgeschlossen |
-| 6 | Bereinigtes, wiederverwendbares Unity-Template und unabhängiger Template-Test | Geplant |
+| 6 | Bereinigtes, wiederverwendbares Unity-Template und unabhängiger Template-Test | Technisch abgeschlossen; Pull Request und Release-Tag stehen aus |
 
 ## Aktueller Stand
 
-Stand: **15. September 2026, 15:47 CEST**
+Stand: **15. September 2026, 16:34 CEST**
 
-Die Meilensteine 0 bis 5 sind auf der Meta Quest 3 praktisch bestanden:
+Die Meilensteine 0 bis 5 sind auf der Meta Quest 3 praktisch bestanden. Meilenstein 6 ist durch ein unabhängig erzeugtes Projekt, dessen Play-Mode-Tests und einen Android-Build technisch nachgewiesen:
 
 - Unity **6000.3.24f1** mit Universal Render Pipeline
 - Android/ARM64, OpenXR und Meta-XR-Pakete
@@ -74,8 +74,11 @@ Die Meilensteine 0 bis 5 sind auf der Meta Quest 3 praktisch bestanden:
 - ein- und ausschaltbare Diagnoseansicht mit farbigen Flächengrenzen und Bezeichnungen aller erkannten semantischen Raumanker
 - zentrales `SemanticLabelProfile` als ScriptableObject für Anzeigename, Farbe sowie optionale Icons und Content-Prefabs
 - gemeinsame `TABLE`-Konfiguration für Diagnoseansicht und virtuellen Würfel ohne Änderung der Erkennungslogik
+- bereinigtes Unity-Template **Quest MR Foundation** in Version `0.1.0`
+- unabhängige Neuerstellung von Projekt, lokalem Git-Repository und privatem GitHub-Repository in einem Arbeitsschritt
+- 16 von 16 bestandene Play-Mode-Tests und erfolgreicher Android-Build im separaten Template-Testprojekt
 
-Meilenstein 4 wurde über Pull Request #4 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-label-mapping`. Tisch- und Wandplatzierung, direkter Flächenwechsel, die per rechtem Stick-Klick schaltbare Labelansicht und das konfigurierbare Labelprofil sind auf der Quest 3 praktisch bestätigt. Der Pull Request für Meilenstein 5 steht noch aus.
+Die Meilensteine 0 bis 5 wurden über Pull Requests in `main` übernommen. Die Template-Arbeit liegt auf `feature/reusable-template`. Nach Commit, Pull Request und Merge markiert der Release-Tag `v0.1.0` den abgeschlossenen Lernprototyp.
 
 ## Technische Basis
 
@@ -128,6 +131,7 @@ Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen se
 - [Lernjournal und Verlauf](Documentation/LERNJOURNAL.md)
 - [Technische Entscheidungen](Documentation/ENTSCHEIDUNGEN.md)
 - [Testprotokoll](Documentation/TESTPROTOKOLL.md)
+- [Template-Anleitung und geprüfter GitHub-Erstellungsweg](Documentation/TEMPLATE.md)
 
 ## Bekannte Grenzen
 
@@ -138,4 +142,4 @@ Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen se
 
 ## Nächster Schritt
 
-Meilenstein 5 ist praktisch bestanden und dokumentiert. Als Nächstes wird in Meilenstein 6 aus dem stabilen Projektstand ein bereinigtes Unity-Template erstellt und über ein neues, unabhängiges Testprojekt verifiziert.
+Meilenstein 6 ist technisch abgeschlossen. Als Nächstes werden die Template-Dateien auf `feature/reusable-template` committed, per Pull Request geprüft und in `main` übernommen. Danach wird der getestete Abschlussstand mit `v0.1.0` markiert.
