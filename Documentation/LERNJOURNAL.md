@@ -105,6 +105,9 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-15 ca. 13:47 | Christoph | Korrigierte WALL_FACE-Platzierung praktisch bestätigt | Das Schild erschien sichtbar und raumfest auf der erkannten Wand. Der abschließende Smoke-Test war grün. |
 | 2026-09-15 ca. 13:55–14:05 | Codex, von Christoph delegiert | Flächengebundene Replatzierung umgesetzt | Würfel und Schild lassen sich per Trigger greifen. Controllerstrahlen werden auf die semantische Tisch- beziehungsweise Wandebene projiziert und die Objektgrenzen innerhalb des jeweiligen Ankers gehalten. B setzt beide zurück. 11 von 11 Play-Mode-Tests und Android-Build bestanden; Quest-Sichttest folgt. |
 | 2026-09-15 ca. 14:08 | Christoph | Flächengebundene Interaktion auf der Quest bestätigt | Würfel und Schild ließen sich innerhalb ihrer Tisch- beziehungsweise Wandflächen verschieben; Begrenzung und gemeinsamer Reset funktionierten. Smoke-Test bestanden. |
+| 2026-09-15 ca. 14:10–14:20 | Codex, von Christoph delegiert | Ersten Ankerwechsel umgesetzt und im Editor geprüft | Zunächst wechselten A und rechter Stick zyklisch durch gültige `TABLE`- beziehungsweise `WALL_FACE`-Anker. 13 von 13 Play-Mode-Tests, Android-Build und Installation bestanden. Der anschließende Gerätetest zeigte, dass blindes Durchschalten räumlich unverständlich ist. |
+| 2026-09-15 ca. 14:22–14:39 | Gemeinsam | Ankerwechsel als räumliches Drag-and-Drop neu gefasst | Christoph präzisierte die gewünschte Interaktion: Das gegriffene Objekt soll beim Zeigen auf eine andere reale Fläche deren semantischen Anker übernehmen. Codex ersetzte die Tastenbelegung durch direkte MRUK-Raum-Raycasts auf Tischoberseiten und Wandflächen; 13 von 13 Play-Mode-Tests, Android-Build und Installation bestanden. |
+| 2026-09-15 ca. 14:40 | Christoph | Direkten semantischen Flächenwechsel bestätigt | Würfel und Schild übernahmen beim Ziehen auf eine andere passende reale Fläche automatisch den tatsächlich anvisierten `TABLE`- beziehungsweise `WALL_FACE`-Anker. Smoke-Test bestanden. |
 
 ## Zentrale Learnings
 
@@ -143,6 +146,7 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Die Tischwahl verwendet bewusst die horizontale Nähe und nicht das Sichtfeld. Für Status-UI ist dagegen die Blickrichtung sinnvoll: Das Schild bevorzugt eine sichtbare `WALL_FACE`, die zum Benutzer zeigt.
 - Eine gültige Wandposition garantiert noch keine sichtbare UI: MRUKs Wandnormale und die sichtbare Seite eines Unity-Canvas verwenden entgegengesetzte Vorwärtsrichtungen. Das Quest-Log half, Erkennungs- und Ausrichtungsfehler voneinander zu trennen.
 - Für flächengebundene Interaktion reicht eine semantische Startposition nicht. Jeder neue Controller-Zielpunkt wird in den lokalen Koordinatenraum des erkannten Ankers umgerechnet und dort einschließlich der Objektgröße begrenzt.
+- Zyklisches Umschalten ist bei räumlich verteilten Flächen zwar technisch einfach, aber ohne sichtbare Zuordnung unverständlich. Ein direkter Scene-API-Raycast verbindet die Controllerhandlung stattdessen mit der tatsächlich anvisierten realen Fläche.
 
 ## Aktueller Stand
 
@@ -159,11 +163,12 @@ Noch offen:
 
 - Würfel innerhalb seines erkannten Tisches kontrolliert replatzierbar machen.
 - Schild innerhalb seiner erkannten Wand kontrolliert replatzierbar machen.
-- Zwischen mehreren erkannten Tischen und Wänden wechseln.
+- Semantische Raumlabels per Stick-Klick ein- und ausblendbar visualisieren.
+- Virtuelle Inhalte über eine Konfiguration Labels wie `TABLE`, `COUCH` und `SCREEN` zuweisen.
 
 ## Nächster einzelner Lernschritt
 
-Eine verständliche Controllerbedienung für den Wechsel des aktiven `TABLE`- beziehungsweise `WALL_FACE`-Ankers festlegen und umsetzen.
+Meilenstein 5 beginnen: Erkannte semantische Raumlabels und Flächengrenzen per rechtem Stick-Klick ein- und ausblendbar darstellen.
 
 ## Vorlage für neue Einträge
 

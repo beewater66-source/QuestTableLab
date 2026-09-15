@@ -155,26 +155,7 @@ public sealed class SemanticTablePlacementController : MonoBehaviour
             return false;
         }
 
-        Vector2 halfUiSize = GetWallUiHalfSize();
-        CalculateWallUiPose(
-            wall,
-            wallOffsetMeters,
-            wallSurfaceDistance,
-            wallEdgePadding,
-            halfUiSize,
-            out Vector3 position,
-            out Quaternion rotation);
-
-        wallUi.SetPositionAndRotation(position, rotation);
-        Physics.SyncTransforms();
-        statusOverlay?.SetFrameDirty();
-
-        SelectedWall = wall;
-        SelectedWallPosition = position;
-        selectedWallRotation = rotation;
-        string anchorId = wall.HasValidHandle ? wall.Anchor.Uuid.ToString() : wall.name;
-        Debug.Log($"[QuestTableLab] WALL_FACE '{anchorId}' selected. UI placed at {position}.");
-        return true;
+        return PlaceUiOnWall(wall);
     }
 
     public bool TryGetTableConstrainedCubePosition(
@@ -287,31 +268,7 @@ public sealed class SemanticTablePlacementController : MonoBehaviour
             return false;
         }
 
-        SelectedTable = table;
-        SelectedTableTop = tableTop;
-
-        float halfHeight = targetCollider != null ? targetCollider.bounds.extents.y : 0f;
-        Vector3 targetPosition = tableTop + Vector3.up * (halfHeight + surfaceClearance);
-        Quaternion targetRotation = Quaternion.Euler(0f, target.eulerAngles.y, 0f);
-
-        if (cubeMover != null)
-        {
-            cubeMover.SetResetPose(targetPosition, targetRotation);
-        }
-        else
-        {
-            target.SetPositionAndRotation(targetPosition, targetRotation);
-            Physics.SyncTransforms();
-        }
-
-        string anchorId = table.HasValidHandle ? table.Anchor.Uuid.ToString() : table.name;
-        string displayId = anchorId.Length > 8 ? anchorId[..8] : anchorId;
-        string wallStatus = SelectedWall != null ? "\nUI: WALL_FACE" : "\nUI: keine WALL_FACE gefunden";
-        SetStatus(
-            PlacementState.TableFound,
-            $"TABLE erkannt\nAnchor: {displayId}\nWürfel: {FormatVector(targetPosition)}{wallStatus}");
-        Debug.Log($"[QuestTableLab] TABLE '{anchorId}' selected. Cube placed at {targetPosition}.");
-        return true;
+        return PlaceOnTable(table, tableTop);
     }
 
     public static bool TryFindNearestTable(
@@ -353,6 +310,92 @@ public sealed class SemanticTablePlacementController : MonoBehaviour
         }
 
         return nearestTable != null;
+    }
+
+    public bool TryAdoptTableFromRay(Ray controllerRay, float maxDistance)
+    {
+        MRUKRoom room = mruk != null ? mruk.GetCurrentRoom() : null;
+        if (!TryRaycastTableTop(room, controllerRay, maxDistance, out MRUKAnchor table, out _))
+        {
+            return false;
+        }
+
+        if (table == SelectedTable)
+        {
+            return true;
+        }
+
+        SetSelectedTable(table, table.transform.position, moveTarget: false);
+        UpdateSuccessStatus();
+        Debug.Log($"[QuestTableLab] Cube adopted TABLE '{GetAnchorId(table)}' from controller ray.");
+        return true;
+    }
+
+    public bool TryAdoptWallFromRay(Ray controllerRay, float maxDistance, out bool changed)
+    {
+        changed = false;
+        MRUKRoom room = mruk != null ? mruk.GetCurrentRoom() : null;
+        if (!TryRaycastWall(room, controllerRay, maxDistance, out MRUKAnchor wall, out _))
+        {
+            return false;
+        }
+
+        if (wall == SelectedWall)
+        {
+            return true;
+        }
+
+        SetSelectedWall(wall, moveTarget: false);
+        UpdateSuccessStatus();
+        changed = true;
+        Debug.Log($"[QuestTableLab] Wall UI adopted WALL_FACE '{GetAnchorId(wall)}' from controller ray.");
+        return true;
+    }
+
+    public static bool TryRaycastTableTop(
+        MRUKRoom room,
+        Ray ray,
+        float maxDistance,
+        out MRUKAnchor table,
+        out RaycastHit hit)
+    {
+        table = null;
+        hit = default;
+        if (room == null
+            || !room.Raycast(
+                ray,
+                maxDistance,
+                new LabelFilter(MRUKAnchor.SceneLabels.TABLE, MRUKAnchor.ComponentType.Volume),
+                out hit,
+                out table)
+            || table == null
+            || !table.VolumeBounds.HasValue)
+        {
+            return false;
+        }
+
+        // Side faces do not represent a valid resting surface for the cube.
+        return Vector3.Dot(hit.normal, Vector3.up) > 0.5f;
+    }
+
+    public static bool TryRaycastWall(
+        MRUKRoom room,
+        Ray ray,
+        float maxDistance,
+        out MRUKAnchor wall,
+        out RaycastHit hit)
+    {
+        wall = null;
+        hit = default;
+        return room != null
+               && room.Raycast(
+                   ray,
+                   maxDistance,
+                   new LabelFilter(MRUKAnchor.SceneLabels.WALL_FACE, MRUKAnchor.ComponentType.Plane),
+                   out hit,
+                   out wall)
+               && wall != null
+               && wall.PlaneRect.HasValue;
     }
 
     public static bool TryFindBestWall(
@@ -451,6 +494,90 @@ public sealed class SemanticTablePlacementController : MonoBehaviour
         // forward direction must point back toward the wall.
         rotation = Quaternion.LookRotation(-wall.transform.forward, wall.transform.up);
     }
+
+    private bool PlaceOnTable(MRUKAnchor table, Vector3 tableTop)
+    {
+        if (table == null || !table.VolumeBounds.HasValue)
+        {
+            return false;
+        }
+
+        Vector3 targetPosition = SetSelectedTable(table, tableTop, moveTarget: true);
+        Debug.Log($"[QuestTableLab] TABLE '{GetAnchorId(table)}' selected. Cube placed at {targetPosition}.");
+        UpdateSuccessStatus();
+        return true;
+    }
+
+    private bool PlaceUiOnWall(MRUKAnchor wall)
+    {
+        if (wall == null || !wall.PlaneRect.HasValue || wallUi == null)
+        {
+            return false;
+        }
+
+        SetSelectedWall(wall, moveTarget: true);
+        Debug.Log($"[QuestTableLab] WALL_FACE '{GetAnchorId(wall)}' selected. UI placed at {SelectedWallPosition}.");
+        return true;
+    }
+
+    private Vector3 SetSelectedTable(MRUKAnchor table, Vector3 tableTop, bool moveTarget)
+    {
+        SelectedTable = table;
+        SelectedTableTop = tableTop;
+        float halfHeight = targetCollider != null ? targetCollider.bounds.extents.y : 0f;
+        Vector3 targetPosition = tableTop + Vector3.up * (halfHeight + surfaceClearance);
+        Quaternion targetRotation = Quaternion.Euler(0f, target.eulerAngles.y, 0f);
+
+        if (cubeMover != null)
+        {
+            cubeMover.SetResetPose(targetPosition, targetRotation, moveTarget);
+        }
+        else if (moveTarget)
+        {
+            target.SetPositionAndRotation(targetPosition, targetRotation);
+            Physics.SyncTransforms();
+        }
+
+        return targetPosition;
+    }
+
+    private void SetSelectedWall(MRUKAnchor wall, bool moveTarget)
+    {
+        CalculateWallUiPose(
+            wall,
+            wallOffsetMeters,
+            wallSurfaceDistance,
+            wallEdgePadding,
+            GetWallUiHalfSize(),
+            out Vector3 position,
+            out Quaternion rotation);
+        SelectedWall = wall;
+        SelectedWallPosition = position;
+        selectedWallRotation = rotation;
+
+        if (moveTarget)
+        {
+            wallUi.SetPositionAndRotation(position, rotation);
+            Physics.SyncTransforms();
+            statusOverlay?.SetFrameDirty();
+        }
+    }
+
+    private void UpdateSuccessStatus()
+    {
+        if (SelectedTable == null)
+        {
+            return;
+        }
+
+        string wallStatus = SelectedWall != null ? "WALL_FACE erkannt" : "keine WALL_FACE gefunden";
+        SetStatus(
+            PlacementState.TableFound,
+            $"TABLE + {wallStatus}\nTrigger: auf andere Fläche ziehen\nB: Reset");
+    }
+
+    private static string GetAnchorId(MRUKAnchor anchor) =>
+        anchor.HasValidHandle ? anchor.Anchor.Uuid.ToString() : anchor.name;
 
     private void ResolveReferences()
     {

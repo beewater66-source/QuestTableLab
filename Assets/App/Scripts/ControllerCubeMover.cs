@@ -164,6 +164,7 @@ public sealed class ControllerCubeMover : MonoBehaviour
             {
                 float footprintRadius = Mathf.Max(targetCollider.bounds.extents.x, targetCollider.bounds.extents.z);
                 float halfHeight = targetCollider.bounds.extents.y;
+                semanticPlacement?.TryAdoptTableFromRay(aimRay, controllerAim.RayLength);
                 if (semanticPlacement == null || !semanticPlacement.HasSelectedTable)
                 {
                     target.position = aimRay.GetPoint(grabDistance) + grabOffset;
@@ -178,14 +179,26 @@ public sealed class ControllerCubeMover : MonoBehaviour
                     target.position = constrainedPosition;
                 }
             }
-            else if (semanticPlacement != null
-                     && semanticPlacement.TryGetWallConstrainedUiPose(
+            else if (semanticPlacement != null)
+            {
+                if (semanticPlacement.TryAdoptWallFromRay(
+                        aimRay,
+                        controllerAim.RayLength,
+                        out bool wallChanged)
+                    && wallChanged)
+                {
+                    // On a different wall the old wall's local grab offset has no useful meaning.
+                    wallGrabOffset = Vector2.zero;
+                }
+
+                if (semanticPlacement.TryGetWallConstrainedUiPose(
                          aimRay,
                          wallGrabOffset,
                          out Vector3 wallPosition,
                          out Quaternion wallRotation))
-            {
-                wallTarget.SetPositionAndRotation(wallPosition, wallRotation);
+                {
+                    wallTarget.SetPositionAndRotation(wallPosition, wallRotation);
+                }
             }
 
             return;

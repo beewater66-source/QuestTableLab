@@ -289,3 +289,30 @@ Christoph bestätigte, dass das korrigierte Schild sichtbar und raumfest auf der
 Christoph bestätigte auf der Quest 3, dass sich Würfel und Schild per Controller auf ihrer erkannten Tisch- beziehungsweise Wandfläche verschieben lassen. Die Flächenbegrenzung und das gemeinsame Zurücksetzen mit B funktionierten im Gerätetest.
 
 **Ergebnis: BESTANDEN**
+
+### Test 009 – Direkter Wechsel zwischen TABLE- und WALL_FACE-Ankern
+
+| Feld | Eintrag |
+|---|---|
+| Datum | 2026-09-15 |
+| Branch | `feature/semantic-table-placement` |
+| Zielgerät | Meta Quest 3 |
+| Bedienung | Objekt mit Trigger greifen und auf eine andere passende reale Fläche ziehen; B: Reset |
+| Testarten | Play Mode, Android-Build und Installation; räumlicher Interaktionstest folgt |
+
+**Technisches Ergebnis**
+
+- Die zunächst getestete zyklische Auswahl über A und rechten Stick wurde verworfen, weil das räumliche Ziel dabei nicht erkennbar ist.
+- Während des Ziehens fragt ein direkter MRUK-Raum-Raycast den tatsächlich anvisierten semantischen Anker ab.
+- Der Würfel übernimmt nur die nach oben gerichtete Oberfläche eines gültigen `TABLE`-Volumens.
+- Das Schild übernimmt nur eine direkt getroffene ebene `WALL_FACE`.
+- Nach dem Wechsel werden Flächenbegrenzung und Reset-Ziel auf den neuen Anker bezogen.
+- 13 von 13 Play-Mode-Tests bestanden.
+- Der vorherige zyklische Android-Build `build_db69e017e877` bestand technisch, wurde nach dem Gerätetest jedoch bewusst ersetzt.
+- Direkter Drag-and-Drop-Build `build_2d1966d03fa8` in 214 Sekunden mit 0 Fehlern und 7 bekannten Warnungen erstellt und erfolgreich auf der Quest 3 installiert.
+
+**Räumliches Ergebnis**
+
+Christoph bestätigte auf der Quest 3, dass Würfel und Schild beim Ziehen auf eine andere passende reale Fläche automatisch deren tatsächlich anvisierten `TABLE`- beziehungsweise `WALL_FACE`-Anker übernehmen. Flächenbegrenzung und Reset bezogen sich anschließend korrekt auf die neue Fläche.
+
+**Ergebnis: BESTANDEN**

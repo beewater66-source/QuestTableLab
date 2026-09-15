@@ -215,6 +215,37 @@ namespace QuestTableLab.Tests.PlayMode
         }
 
         [Test]
+        public void SemanticTableRaycastSelectsOnlyTopSurface()
+        {
+            GameObject roomObject = new("SemanticTableCycleTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor table = CreateTestAnchor(
+                room,
+                "RaycastTable",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(0f, 0.8f, 0f),
+                hasVolume: true);
+            table.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+
+            try
+            {
+                bool found = SemanticTablePlacementController.TryRaycastTableTop(
+                    room,
+                    new Ray(new Vector3(0f, 2f, 0f), Vector3.down),
+                    3f,
+                    out MRUKAnchor selected,
+                    out RaycastHit hit);
+                Assert.That(found, Is.True);
+                Assert.That(selected, Is.SameAs(table));
+                Assert.That(Vector3.Dot(hit.normal, Vector3.up), Is.GreaterThan(0.5f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [Test]
         public void SemanticWallSelectionPrefersVisibleFacingWall()
         {
             GameObject roomObject = new("SemanticWallSelectionTestRoom");
@@ -240,6 +271,34 @@ namespace QuestTableLab.Tests.PlayMode
 
                 Assert.That(found, Is.True);
                 Assert.That(selected, Is.SameAs(frontWall));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [Test]
+        public void SemanticWallRaycastReturnsPointedWall()
+        {
+            GameObject roomObject = new("SemanticWallCycleTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor wall = CreateTestWall(
+                room,
+                "PointedWall",
+                new Vector3(0f, 1f, 2f),
+                Quaternion.Euler(0f, 180f, 0f));
+
+            try
+            {
+                bool found = SemanticTablePlacementController.TryRaycastWall(
+                    room,
+                    new Ray(new Vector3(0f, 2f, 0f), Vector3.forward),
+                    3f,
+                    out MRUKAnchor selected,
+                    out _);
+                Assert.That(found, Is.True);
+                Assert.That(selected, Is.SameAs(wall));
             }
             finally
             {
@@ -368,6 +427,13 @@ namespace QuestTableLab.Tests.PlayMode
 
             SetInternalProperty(wall, nameof(MRUKAnchor.Label), MRUKAnchor.SceneLabels.WALL_FACE);
             SetInternalProperty(wall, nameof(MRUKAnchor.PlaneRect), (Rect?)new Rect(-2f, 0f, 4f, 2f));
+            wall.PlaneBoundary2D.AddRange(new[]
+            {
+                new Vector2(-2f, 0f),
+                new Vector2(-2f, 2f),
+                new Vector2(2f, 2f),
+                new Vector2(2f, 0f)
+            });
             room.Anchors.Add(wall);
             room.WallAnchors.Add(wall);
             return wall;

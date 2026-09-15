@@ -69,6 +69,7 @@ Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
 - automatische Platzierung des Würfels auf der Tischoberkante; B setzt anschließend auf diese Position zurück
 - automatische Auswahl einer zum Benutzer gerichteten `WALL_FACE` für das Schild; horizontaler und vertikaler Versatz sowie Wandabstand sind konfigurierbar
 - Controller-Replatzierung von Würfel und Schild mit Begrenzung auf die jeweils erkannte Tisch- beziehungsweise Wandfläche
+- direkter Ankerwechsel per Drag-and-Drop: Beim Ziehen auf eine andere erkannte Fläche übernimmt das Objekt automatisch deren `TABLE`- beziehungsweise `WALL_FACE`-Anker
 
 Meilenstein 3 wurde über Pull Request #3 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-table-placement`. Die semantische Tischplatzierung wurde auf zwei realen, im Space Setup erfassten Tischen erfolgreich bestätigt. Nach Korrektur der Canvas-Ausrichtung wurde auch die automatische Wandplatzierung des Schilds auf der Quest erfolgreich geprüft.
 
@@ -123,4 +124,4 @@ Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen se
 
 ## Nächster Schritt
 
-Die flächengebundene Replatzierung wurde auf der Quest 3 praktisch bestätigt. Als Nächstes folgt eine verständliche Controllerbedienung, mit der Würfel und Schild zwischen mehreren erkannten `TABLE`- beziehungsweise `WALL_FACE`-Ankern wechseln können.
+Die flächengebundene Replatzierung und der direkte Wechsel auf einen tatsächlich anvisierten `TABLE`- oder `WALL_FACE`-Anker wurden auf der Quest 3 praktisch bestätigt. Als Nächstes folgt in Meilenstein 5 eine ein- und ausschaltbare Visualisierung der erkannten Raumlabels sowie eine konfigurierbare Zuordnung virtueller Inhalte zu diesen Labels.
