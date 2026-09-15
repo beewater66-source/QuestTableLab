@@ -135,6 +135,12 @@ namespace QuestTableLab.Tests.PlayMode
                 "The static label should not be redrawn every frame.");
             Assert.That(overlay.GetType().GetField("compositionMode").GetValue(overlay).ToString(),
                 Is.EqualTo("DepthTested"));
+
+            BoxCollider interactionCollider = panel.GetComponent<BoxCollider>();
+            Assert.That(interactionCollider, Is.Not.Null,
+                "The wall UI needs a 3D hit surface for controller interaction.");
+            Assert.That(interactionCollider.size.x, Is.EqualTo(1000f).Within(0.01f));
+            Assert.That(interactionCollider.size.y, Is.EqualTo(250f).Within(0.01f));
         }
 
         [UnityTest]
@@ -269,6 +275,54 @@ namespace QuestTableLab.Tests.PlayMode
                 Assert.That(localPosition.y, Is.EqualTo(1.876f).Within(0.001f));
                 Assert.That(Vector3.Dot(rotation * Vector3.forward, -wall.transform.forward),
                     Is.GreaterThan(0.999f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator SemanticTableDragRemainsInsideTableTop()
+        {
+            yield return null;
+
+            SemanticTablePlacementController placement =
+                Object.FindFirstObjectByType<SemanticTablePlacementController>();
+            GameObject roomObject = new("SemanticTableDragTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor table = CreateTestAnchor(
+                room,
+                "DragTable",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(0f, 0.8f, 0f),
+                hasVolume: true);
+            table.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+            SetInternalProperty(
+                table,
+                nameof(MRUKAnchor.VolumeBounds),
+                (Bounds?)new Bounds(new Vector3(0f, 0f, -0.4f), new Vector3(2f, 1f, 0.8f)));
+            SetInternalProperty(placement, nameof(SemanticTablePlacementController.SelectedTable), table);
+            SetInternalProperty(
+                placement,
+                nameof(SemanticTablePlacementController.SelectedTableTop),
+                table.transform.position);
+
+            try
+            {
+                bool found = placement.TryGetTableConstrainedCubePosition(
+                    new Ray(new Vector3(5f, 2f, 5f), Vector3.down),
+                    Vector3.zero,
+                    footprintRadius: 0.1f,
+                    halfHeight: 0.1f,
+                    out Vector3 position);
+
+                Vector3 surfaceLocal = table.transform.InverseTransformPoint(
+                    position - Vector3.up * 0.102f);
+                Assert.That(found, Is.True);
+                Assert.That(surfaceLocal.x, Is.EqualTo(0.9f).Within(0.001f));
+                Assert.That(surfaceLocal.y, Is.EqualTo(-0.4f).Within(0.001f));
+                Assert.That(position.y, Is.EqualTo(0.902f).Within(0.001f));
             }
             finally
             {

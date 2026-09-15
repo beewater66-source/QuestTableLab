@@ -217,6 +217,8 @@ MonoBehaviour:
   controllerAim: {fileID: 0}
   target: {fileID: 0}
   fallbackTargetName: RoomFixedTestCube
+  wallTarget: {fileID: 0}
+  semanticPlacement: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,6 +585,7 @@ GameObject:
   - component: {fileID: 969991445}
   - component: {fileID: 969991444}
   - component: {fileID: 969991449}
+  - component: {fileID: 969991450}
   m_Layer: 3
   m_Name: HelloPanel
   m_TagString: Untagged
@@ -739,6 +742,27 @@ MonoBehaviour:
   overlapMask: 0
   compositionMode: 2
   _overlayEnabled: 1
+--- !u!65 &969991450
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 969991442}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1000, y: 250, z: 20}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1010052850
 GameObject:
   m_ObjectHideFlags: 0
@@ -776,6 +800,10 @@ MonoBehaviour:
   cubeMover: {fileID: 137701371}
   viewer: {fileID: 1675683846}
   surfaceClearance: 0.002
+  wallUi: {fileID: 0}
+  wallOffsetMeters: {x: 0, y: 0}
+  wallSurfaceDistance: 0.025
+  wallEdgePadding: 0.03
   statusText: {fileID: 747085515}
   statusOverlay: {fileID: 969991449}
 --- !u!114 &1010052852

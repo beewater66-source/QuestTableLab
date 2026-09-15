@@ -68,6 +68,7 @@ Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
 - verständliche Statusmeldungen für fehlende Berechtigung, fehlendes Space Setup und fehlendes Tisch-Label
 - automatische Platzierung des Würfels auf der Tischoberkante; B setzt anschließend auf diese Position zurück
 - automatische Auswahl einer zum Benutzer gerichteten `WALL_FACE` für das Schild; horizontaler und vertikaler Versatz sowie Wandabstand sind konfigurierbar
+- Controller-Replatzierung von Würfel und Schild mit Begrenzung auf die jeweils erkannte Tisch- beziehungsweise Wandfläche
 
 Meilenstein 3 wurde über Pull Request #3 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-table-placement`. Die semantische Tischplatzierung wurde auf zwei realen, im Space Setup erfassten Tischen erfolgreich bestätigt. Nach Korrektur der Canvas-Ausrichtung wurde auch die automatische Wandplatzierung des Schilds auf der Quest erfolgreich geprüft.
 
@@ -122,4 +123,4 @@ Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen se
 
 ## Nächster Schritt
 
-Als Nächstes werden Würfel und Schild innerhalb ihrer semantisch erkannten Tisch- beziehungsweise Wandflächen kontrolliert umplatzierbar gemacht. Die Zielpositionen sollen innerhalb der jeweiligen Flächengrenzen bleiben.
+Die flächengebundene Replatzierung wurde auf der Quest 3 praktisch bestätigt. Als Nächstes folgt eine verständliche Controllerbedienung, mit der Würfel und Schild zwischen mehreren erkannten `TABLE`- beziehungsweise `WALL_FACE`-Ankern wechseln können.

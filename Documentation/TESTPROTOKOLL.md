@@ -258,3 +258,34 @@ Die korrigierte Fassung bestand erneut 10 von 10 Play-Mode-Tests. Android-Build 
 Christoph bestätigte, dass das korrigierte Schild sichtbar und raumfest auf der erkannten Wand erscheint. Würfel, semantische Tischplatzierung und semantische Wandplatzierung funktionierten gemeinsam im selben Quest-Lauf.
 
 **Ergebnis: BESTANDEN**
+
+### Test 008 – Flächengebundene Replatzierung
+
+| Feld | Eintrag |
+|---|---|
+| Datum | 2026-09-15 |
+| Branch | `feature/semantic-table-placement` |
+| Zielgerät | Meta Quest 3 |
+| Testarten | Play Mode, Android-Build, Installation und räumlicher Interaktionstest |
+| Ausgeführt von | Implementierung und technische Tests: Codex; räumliche Interaktion: Christoph Dorn |
+
+**Geprüft und umgesetzt**
+
+- Das Schild besitzt einen unsichtbaren Collider in Canvas-Größe und ist dadurch mit dem Controllerstrahl greifbar.
+- Während des Greifens wird der Würfel auf die Oberseite seines gewählten `TABLE`-Ankers projiziert.
+- Das Schild wird während des Greifens auf die Ebene seines gewählten `WALL_FACE`-Ankers projiziert.
+- Beide Zielpositionen berücksichtigen die Objektgröße und werden innerhalb der semantischen Flächengrenzen gehalten.
+- Ohne geladene semantische Tischdaten bleibt die bisherige freie Würfelbewegung als Rückfall erhalten.
+- B setzt Würfel und Schild auf ihre semantischen Ausgangspositionen zurück.
+
+**Technisches Ergebnis**
+
+- 11 von 11 Play-Mode-Tests bestanden.
+- Android-Build `build_79be74699a90` in 248 Sekunden mit 0 Fehlern und 7 bekannten Warnungen erstellt.
+- APK erfolgreich auf der verbundenen Quest 3 installiert.
+
+**Räumliches Ergebnis**
+
+Christoph bestätigte auf der Quest 3, dass sich Würfel und Schild per Controller auf ihrer erkannten Tisch- beziehungsweise Wandfläche verschieben lassen. Die Flächenbegrenzung und das gemeinsame Zurücksetzen mit B funktionierten im Gerätetest.
+
+**Ergebnis: BESTANDEN**

@@ -53,8 +53,11 @@ public sealed class SemanticTablePlacementController : MonoBehaviour
     public Vector3 SelectedTableTop { get; private set; }
     public MRUKAnchor SelectedWall { get; private set; }
     public Vector3 SelectedWallPosition { get; private set; }
+    public bool HasSelectedTable => SelectedTable != null && SelectedTable.VolumeBounds.HasValue;
+    public bool HasSelectedWall => SelectedWall != null && SelectedWall.PlaneRect.HasValue;
 
     private Collider targetCollider;
+    private Quaternion selectedWallRotation;
 
     private async void Start()
     {
@@ -168,9 +171,100 @@ public sealed class SemanticTablePlacementController : MonoBehaviour
 
         SelectedWall = wall;
         SelectedWallPosition = position;
+        selectedWallRotation = rotation;
         string anchorId = wall.HasValidHandle ? wall.Anchor.Uuid.ToString() : wall.name;
         Debug.Log($"[QuestTableLab] WALL_FACE '{anchorId}' selected. UI placed at {position}.");
         return true;
+    }
+
+    public bool TryGetTableConstrainedCubePosition(
+        Ray controllerRay,
+        Vector3 worldGrabOffset,
+        float footprintRadius,
+        float halfHeight,
+        out Vector3 position)
+    {
+        position = default;
+        if (SelectedTable == null || !SelectedTable.VolumeBounds.HasValue)
+        {
+            return false;
+        }
+
+        Plane tablePlane = new(Vector3.up, SelectedTableTop);
+        if (!tablePlane.Raycast(controllerRay, out float distance) || distance < 0f)
+        {
+            return false;
+        }
+
+        Vector3 requestedWorldPosition = controllerRay.GetPoint(distance) + worldGrabOffset;
+        Vector3 requestedLocalPosition = SelectedTable.transform.InverseTransformPoint(requestedWorldPosition);
+        Bounds bounds = SelectedTable.VolumeBounds.Value;
+        float xInset = Mathf.Min(footprintRadius, bounds.size.x * 0.5f);
+        float yInset = Mathf.Min(footprintRadius, bounds.size.y * 0.5f);
+        float x = Mathf.Clamp(requestedLocalPosition.x, bounds.min.x + xInset, bounds.max.x - xInset);
+        float y = Mathf.Clamp(requestedLocalPosition.y, bounds.min.y + yInset, bounds.max.y - yInset);
+
+        Vector3 surfacePoint = SelectedTable.transform.TransformPoint(new Vector3(x, y, 0f));
+        position = surfacePoint + Vector3.up * (halfHeight + surfaceClearance);
+        return true;
+    }
+
+    public Vector2 GetWallLocalOffset(Vector3 uiCenter, Vector3 grabbedPoint)
+    {
+        if (SelectedWall == null)
+        {
+            return Vector2.zero;
+        }
+
+        Vector3 localCenter = SelectedWall.transform.InverseTransformPoint(uiCenter);
+        Vector3 localGrab = SelectedWall.transform.InverseTransformPoint(grabbedPoint);
+        return new Vector2(localCenter.x - localGrab.x, localCenter.y - localGrab.y);
+    }
+
+    public bool TryGetWallConstrainedUiPose(
+        Ray controllerRay,
+        Vector2 localGrabOffset,
+        out Vector3 position,
+        out Quaternion rotation)
+    {
+        position = default;
+        rotation = default;
+        if (SelectedWall == null || !SelectedWall.PlaneRect.HasValue || wallUi == null)
+        {
+            return false;
+        }
+
+        Plane wallPlane = new(SelectedWall.transform.forward, SelectedWall.transform.position);
+        if (!wallPlane.Raycast(controllerRay, out float distance) || distance < 0f)
+        {
+            return false;
+        }
+
+        Vector3 localHit = SelectedWall.transform.InverseTransformPoint(controllerRay.GetPoint(distance));
+        Rect wallRect = SelectedWall.PlaneRect.Value;
+        Vector2 requestedOffset = new(
+            localHit.x + localGrabOffset.x - wallRect.center.x,
+            localHit.y + localGrabOffset.y - wallRect.center.y);
+        CalculateWallUiPose(
+            SelectedWall,
+            requestedOffset,
+            wallSurfaceDistance,
+            wallEdgePadding,
+            GetWallUiHalfSize(),
+            out position,
+            out rotation);
+        return true;
+    }
+
+    public void ResetWallUi()
+    {
+        if (wallUi == null || SelectedWall == null)
+        {
+            return;
+        }
+
+        wallUi.SetPositionAndRotation(SelectedWallPosition, selectedWallRotation);
+        statusOverlay?.SetFrameDirty();
     }
 
     public bool PlaceOnNearestTable()

@@ -103,6 +103,8 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-15 ca. 13:25–13:40 | Codex, von Christoph delegiert | Automatische Schildplatzierung an `WALL_FACE` vorbereitet | Eine sichtbare und zum Benutzer gerichtete Wand wird gewählt. Horizontaler und vertikaler Versatz sowie Abstand vor der Wand sind einstellbar und werden auf die erkannte Wandfläche begrenzt. 10 von 10 Play-Mode-Tests, Android-Build und Installation bestanden; räumlicher Sichttest steht aus. |
 | 2026-09-15 ca. 13:42 | Gemeinsam | Ersten WALL_FACE-Sichttest ausgewertet | Der Würfel erschien korrekt, das Schild blieb unsichtbar. Das Quest-Log bestätigte Wandanker und Zielposition; die Canvas-Vorderseite war gegenüber der MRUK-Wandnormalen verkehrt ausgerichtet. Codex korrigierte die Rotation für den nächsten Build. |
 | 2026-09-15 ca. 13:47 | Christoph | Korrigierte WALL_FACE-Platzierung praktisch bestätigt | Das Schild erschien sichtbar und raumfest auf der erkannten Wand. Der abschließende Smoke-Test war grün. |
+| 2026-09-15 ca. 13:55–14:05 | Codex, von Christoph delegiert | Flächengebundene Replatzierung umgesetzt | Würfel und Schild lassen sich per Trigger greifen. Controllerstrahlen werden auf die semantische Tisch- beziehungsweise Wandebene projiziert und die Objektgrenzen innerhalb des jeweiligen Ankers gehalten. B setzt beide zurück. 11 von 11 Play-Mode-Tests und Android-Build bestanden; Quest-Sichttest folgt. |
+| 2026-09-15 ca. 14:08 | Christoph | Flächengebundene Interaktion auf der Quest bestätigt | Würfel und Schild ließen sich innerhalb ihrer Tisch- beziehungsweise Wandflächen verschieben; Begrenzung und gemeinsamer Reset funktionierten. Smoke-Test bestanden. |
 
 ## Zentrale Learnings
 
@@ -140,6 +142,7 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Die automatische Platzierung ersetzt die manuelle Steuerung nicht. Nach erfolgreicher Tischsuche bleibt der Würfel bewegbar; die B-Taste kehrt nun zur semantisch ermittelten Tischposition zurück.
 - Die Tischwahl verwendet bewusst die horizontale Nähe und nicht das Sichtfeld. Für Status-UI ist dagegen die Blickrichtung sinnvoll: Das Schild bevorzugt eine sichtbare `WALL_FACE`, die zum Benutzer zeigt.
 - Eine gültige Wandposition garantiert noch keine sichtbare UI: MRUKs Wandnormale und die sichtbare Seite eines Unity-Canvas verwenden entgegengesetzte Vorwärtsrichtungen. Das Quest-Log half, Erkennungs- und Ausrichtungsfehler voneinander zu trennen.
+- Für flächengebundene Interaktion reicht eine semantische Startposition nicht. Jeder neue Controller-Zielpunkt wird in den lokalen Koordinatenraum des erkannten Ankers umgerechnet und dort einschließlich der Objektgröße begrenzt.
 
 ## Aktueller Stand
 
@@ -156,10 +159,11 @@ Noch offen:
 
 - Würfel innerhalb seines erkannten Tisches kontrolliert replatzierbar machen.
 - Schild innerhalb seiner erkannten Wand kontrolliert replatzierbar machen.
+- Zwischen mehreren erkannten Tischen und Wänden wechseln.
 
 ## Nächster einzelner Lernschritt
 
-Den Würfel per Controller auf seinem erkannten Tisch verschieben und die Zielposition auf die Grenzen der Tischoberfläche beschränken.
+Eine verständliche Controllerbedienung für den Wechsel des aktiven `TABLE`- beziehungsweise `WALL_FACE`-Ankers festlegen und umsetzen.
 
 ## Vorlage für neue Einträge
 
