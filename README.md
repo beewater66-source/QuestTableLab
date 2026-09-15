@@ -2,7 +2,7 @@
 
 QuestTableLab ist meine Lern- und Testumgebung für Mixed Reality auf der Meta Quest 3. In diesem Projekt erarbeite ich mir einen nachvollziehbaren Grundaufbau für weitere AR-/MR-Projekte: Git und GitHub, Unity und OpenXR, Passthrough, räumliche Interaktion, semantische Raumlabels und später eine allgemein nutzbare Grundlage für Objektzuordnungen.
 
-Das Projekt ist ausdrücklich **noch nicht** der spätere 3D-gedruckte Wartungsprototyp. Wenn diese Grundlage stabil ist, möchte ich daraus ein bereinigtes Template ableiten. Das Praktikumsprojekt mit eigenem physischen Prototyp, Teileerkennung sowie Wartungs- und Reparaturbegleitung entsteht anschließend als separates Projekt auf dieser Basis.
+Wenn diese Grundlage stabil ist, möchte ich daraus ein bereinigtes und wiederverwendbares Template für neue AR-/MR-Projekte ableiten.
 
 ## Meine Ausgangslage
 
@@ -28,7 +28,7 @@ Darauf aufbauend möchte ich:
 5. eine konfigurierbare Zuordnung zwischen erkannten Kategorien und virtuellen Objekten schaffen,
 6. die stabile, allgemeine Grundlage als Template für spätere AR-/MR-Projekte aufbereiten.
 
-Die semantische Raumerkennung der Quest und die Erkennung individueller, selbst gebauter Bauteile sind unterschiedliche Aufgaben. Eine prototypspezifische Teileerkennung bleibt daher Bestandteil des späteren Praktikumsprojekts; QuestTableLab bereitet dafür eine erweiterbare technische Basis vor.
+Der Schwerpunkt liegt auf einer verständlichen, erweiterbaren technischen Basis. Die einzelnen Funktionen werden deshalb zunächst mit einfachen virtuellen Objekten umgesetzt und nachvollziehbar dokumentiert.
 
 ## Meilensteine
 
