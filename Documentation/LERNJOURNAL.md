@@ -147,6 +147,9 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-14 ab 13:03 | Codex, von Christoph delegiert | Lernjournal begonnen und erweitert | Technische Arbeit, Lernziel und Arbeitsaufteilung werden gemeinsam nachvollziehbar. | Diese Datei |
 | 2026-09-15 08:24–08:38 | Codex, von Christoph delegiert | Erste Passthrough-Anwendung gebaut und ausgeliefert | XR-Kamera, Passthrough und Testmeldung eingerichtet; Android-Build mit 0 Fehlern erzeugt, installiert und gestartet. | Test 001 |
 | 2026-09-15 08:48 | Christoph | Ersten Mixed-Reality-Gerätetest bestätigt | Reale Umgebung und `HELLO QUESTTABLELAB` im Headset sichtbar; Meldung folgt erwartungsgemäß der Kamera. | Test 001 bestanden |
+| 2026-09-15, vormittags | Christoph | Pull Request #1 gemergt und Bootstrap-Branch auf GitHub gelöscht | Der geprüfte Quest-Bootstrap wurde in `main` übernommen; die abgeschlossene Arbeitslinie wurde aufgeräumt. | Merge-Commit `d93dd39` |
+| 2026-09-15 09:13–09:27 | Codex, von Christoph delegiert | Raumfesten Testwürfel und raumfeste Beschriftung umgesetzt, gebaut und ausgeliefert | 20-cm-Würfel sowie World-Space-Canvas außerhalb der XR-Kamera angelegt; drei inkrementelle Android-Builds erstellt und installiert. | Test 002 |
+| 2026-09-15 09:28 | Christoph | Raumfeste Darstellung im Headset bestätigt | Würfel bleibt auch bei schnellen Kopfbewegungen stabil; die korrigierte Beschriftung steht gut lesbar über ihm. | Test 002 bestanden |
 
 ## Bisherige Learnings
 
@@ -173,6 +176,9 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Entscheidungen und Irrwege werden dokumentiert, weil sie Teil des Lernergebnisses sind und spätere Projekte beschleunigen.
 - Der erste IL2CPP-/ARM64-Build kann wegen der einmaligen nativen Übersetzung aller XR-Abhängigkeiten deutlich länger dauern als spätere Builds.
 - Ein kameragebundenes UI bleibt stets im Sichtfeld und bewegt sich mit dem Kopf. Für einen raumfesten Würfel wird stattdessen eine Position im erfassten Raum beziehungsweise ein Anker benötigt.
+- Ein Objekt auf der Szenenwurzel bewegt sich nicht mit der XR-Kamera. Damit lässt sich Raumfestigkeit zunächst unabhängig von semantischer Tischerkennung prüfen.
+- Bei einem World-Space-Canvas auf der Szenenwurzel muss die `Anchored Position` des `RectTransform` korrekt gesetzt werden. Nur die allgemeine Transform-Position zu ändern kann dazu führen, dass Unity X/Y wieder aus den Canvas-Ankern berechnet.
+- Der praktische Sichttest ist unverzichtbar: Technisch plausible Koordinaten reichen nicht aus, um Größe, Lesbarkeit und wahrgenommene Position im Headset zu beurteilen.
 
 ## Aktueller Stand
 
@@ -188,6 +194,8 @@ Erreicht:
 - Eigene Anwendung auf der Quest 3 gestartet.
 - Passthrough und virtuelle Testmeldung im Headset sichtbar.
 - Quest-Bootstrap praktisch nachgewiesen.
+- Erster virtueller Würfel bleibt bei Kopfbewegungen stabil im Raum.
+- Raumfeste Beschriftung steht lesbar über dem Würfel.
 
 Noch nicht praktisch nachgewiesen:
 
@@ -196,7 +204,7 @@ Noch nicht praktisch nachgewiesen:
 
 ## Nächster einzelner Lernschritt
 
-Den bestandenen Bootstrap als eigenen Commit sichern, den Feature-Branch per Pull Request nach `main` zusammenführen und anschließend die Tisch- und Würfelplatzierung auf einem neuen Feature-Branch beginnen.
+Den bestandenen Teststand auf `feature/table-cube-placement` committen. Danach wird die feste Testposition durch eine Platzierung auf einer semantisch erkannten Tischfläche ersetzt.
 
 ## Vorlage für neue Einträge
 
