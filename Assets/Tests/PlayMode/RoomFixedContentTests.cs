@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Reflection;
+using Meta.XR.MRUtilityKit;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -75,6 +77,24 @@ namespace QuestTableLab.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator CubeResetPoseCanBeRebasedAfterSemanticPlacement()
+        {
+            yield return null;
+
+            GameObject cube = GameObject.Find("RoomFixedTestCube");
+            ControllerCubeMover mover = Object.FindFirstObjectByType<ControllerCubeMover>();
+            Vector3 semanticPosition = new(0.45f, 0.82f, 1.25f);
+            Quaternion semanticRotation = Quaternion.Euler(0f, 30f, 0f);
+
+            mover.SetResetPose(semanticPosition, semanticRotation);
+            cube.transform.position += Vector3.one;
+            mover.ResetTarget();
+
+            Assert.That(Vector3.Distance(cube.transform.position, semanticPosition), Is.LessThan(0.001f));
+            Assert.That(Quaternion.Angle(cube.transform.rotation, semanticRotation), Is.LessThan(0.01f));
+        }
+
+        [UnityTest]
         public IEnumerator CubeCanBePlacedWithItsBottomOnFloorLevel()
         {
             yield return null;
@@ -115,6 +135,316 @@ namespace QuestTableLab.Tests.PlayMode
                 "The static label should not be redrawn every frame.");
             Assert.That(overlay.GetType().GetField("compositionMode").GetValue(overlay).ToString(),
                 Is.EqualTo("DepthTested"));
+
+            BoxCollider interactionCollider = panel.GetComponent<BoxCollider>();
+            Assert.That(interactionCollider, Is.Not.Null,
+                "The wall UI needs a 3D hit surface for controller interaction.");
+            Assert.That(interactionCollider.size.x, Is.EqualTo(1000f).Within(0.01f));
+            Assert.That(interactionCollider.size.y, Is.EqualTo(250f).Within(0.01f));
+        }
+
+        [UnityTest]
+        public IEnumerator SemanticRoomLoaderIsAuthoredForExplicitDeviceLoading()
+        {
+            yield return null;
+
+            GameObject semanticRoom = GameObject.Find("SemanticRoom");
+            Assert.That(semanticRoom, Is.Not.Null);
+
+            Component mruk = semanticRoom.GetComponent("MRUK");
+            SemanticTablePlacementController placement =
+                semanticRoom.GetComponent<SemanticTablePlacementController>();
+
+            Assert.That(mruk, Is.Not.Null, "The scene needs one MRUK room-data provider.");
+            Assert.That(placement, Is.Not.Null, "The TABLE label query must be authored in the scene.");
+
+            object sceneSettings = mruk.GetType().GetField("SceneSettings").GetValue(mruk);
+            Assert.That(sceneSettings, Is.Not.Null);
+            Assert.That(sceneSettings.GetType().GetField("DataSource").GetValue(sceneSettings).ToString(),
+                Is.EqualTo("Device"));
+            Assert.That((bool)sceneSettings.GetType().GetField("LoadSceneOnStartup").GetValue(sceneSettings),
+                Is.False, "The placement controller must own loading so it can report precise failures.");
+        }
+
+        [Test]
+        public void SemanticTableSelectionUsesNearestSuitableTableVolume()
+        {
+            GameObject roomObject = new("SemanticSelectionTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor nearTable = CreateTestAnchor(
+                room,
+                "NearTable",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(1f, 0.8f, 0f),
+                hasVolume: true);
+            CreateTestAnchor(
+                room,
+                "FarTable",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(3f, 0.8f, 0f),
+                hasVolume: true);
+            CreateTestAnchor(
+                room,
+                "NearCouch",
+                MRUKAnchor.SceneLabels.COUCH,
+                new Vector3(0.2f, 0.5f, 0f),
+                hasVolume: true);
+            CreateTestAnchor(
+                room,
+                "TableWithoutVolume",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(0.1f, 0.8f, 0f),
+                hasVolume: false);
+
+            try
+            {
+                bool found = SemanticTablePlacementController.TryFindNearestTable(
+                    room,
+                    Vector3.zero,
+                    out MRUKAnchor selected,
+                    out Vector3 top);
+
+                Assert.That(found, Is.True);
+                Assert.That(selected, Is.SameAs(nearTable));
+                Assert.That(Vector3.Distance(top, nearTable.transform.position), Is.LessThan(0.001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [Test]
+        public void SemanticTableRaycastSelectsOnlyTopSurface()
+        {
+            GameObject roomObject = new("SemanticTableCycleTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor table = CreateTestAnchor(
+                room,
+                "RaycastTable",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(0f, 0.8f, 0f),
+                hasVolume: true);
+            table.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+
+            try
+            {
+                bool found = SemanticTablePlacementController.TryRaycastTableTop(
+                    room,
+                    new Ray(new Vector3(0f, 2f, 0f), Vector3.down),
+                    3f,
+                    out MRUKAnchor selected,
+                    out RaycastHit hit);
+                Assert.That(found, Is.True);
+                Assert.That(selected, Is.SameAs(table));
+                Assert.That(Vector3.Dot(hit.normal, Vector3.up), Is.GreaterThan(0.5f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [Test]
+        public void SemanticWallSelectionPrefersVisibleFacingWall()
+        {
+            GameObject roomObject = new("SemanticWallSelectionTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor frontWall = CreateTestWall(
+                room,
+                "FrontWall",
+                new Vector3(0f, 1.3f, 3f),
+                Quaternion.Euler(0f, 180f, 0f));
+            CreateTestWall(
+                room,
+                "RearWall",
+                new Vector3(0f, 1.3f, -1.5f),
+                Quaternion.identity);
+
+            try
+            {
+                bool found = SemanticTablePlacementController.TryFindBestWall(
+                    room,
+                    Vector3.zero,
+                    Vector3.forward,
+                    out MRUKAnchor selected);
+
+                Assert.That(found, Is.True);
+                Assert.That(selected, Is.SameAs(frontWall));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [Test]
+        public void SemanticWallRaycastReturnsPointedWall()
+        {
+            GameObject roomObject = new("SemanticWallCycleTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor wall = CreateTestWall(
+                room,
+                "PointedWall",
+                new Vector3(0f, 1f, 2f),
+                Quaternion.Euler(0f, 180f, 0f));
+
+            try
+            {
+                bool found = SemanticTablePlacementController.TryRaycastWall(
+                    room,
+                    new Ray(new Vector3(0f, 2f, 0f), Vector3.forward),
+                    3f,
+                    out MRUKAnchor selected,
+                    out _);
+                Assert.That(found, Is.True);
+                Assert.That(selected, Is.SameAs(wall));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [Test]
+        public void WallUiPoseClampsRequestedOffsetInsidePlane()
+        {
+            GameObject roomObject = new("SemanticWallPoseTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor wall = CreateTestWall(
+                room,
+                "Wall",
+                new Vector3(0f, 1f, 2f),
+                Quaternion.Euler(0f, 180f, 0f));
+
+            try
+            {
+                SemanticTablePlacementController.CalculateWallUiPose(
+                    wall,
+                    new Vector2(100f, 100f),
+                    0.025f,
+                    0.03f,
+                    new Vector2(0.375f, 0.094f),
+                    out Vector3 position,
+                    out Quaternion rotation);
+
+                Vector3 localPosition = wall.transform.InverseTransformPoint(
+                    position - wall.transform.forward * 0.025f);
+                Assert.That(localPosition.x, Is.EqualTo(1.595f).Within(0.001f));
+                Assert.That(localPosition.y, Is.EqualTo(1.876f).Within(0.001f));
+                Assert.That(Vector3.Dot(rotation * Vector3.forward, -wall.transform.forward),
+                    Is.GreaterThan(0.999f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator SemanticTableDragRemainsInsideTableTop()
+        {
+            yield return null;
+
+            SemanticTablePlacementController placement =
+                Object.FindFirstObjectByType<SemanticTablePlacementController>();
+            GameObject roomObject = new("SemanticTableDragTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            MRUKAnchor table = CreateTestAnchor(
+                room,
+                "DragTable",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(0f, 0.8f, 0f),
+                hasVolume: true);
+            table.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+            SetInternalProperty(
+                table,
+                nameof(MRUKAnchor.VolumeBounds),
+                (Bounds?)new Bounds(new Vector3(0f, 0f, -0.4f), new Vector3(2f, 1f, 0.8f)));
+            SetInternalProperty(placement, nameof(SemanticTablePlacementController.SelectedTable), table);
+            SetInternalProperty(
+                placement,
+                nameof(SemanticTablePlacementController.SelectedTableTop),
+                table.transform.position);
+
+            try
+            {
+                bool found = placement.TryGetTableConstrainedCubePosition(
+                    new Ray(new Vector3(5f, 2f, 5f), Vector3.down),
+                    Vector3.zero,
+                    footprintRadius: 0.1f,
+                    halfHeight: 0.1f,
+                    out Vector3 position);
+
+                Vector3 surfaceLocal = table.transform.InverseTransformPoint(
+                    position - Vector3.up * 0.102f);
+                Assert.That(found, Is.True);
+                Assert.That(surfaceLocal.x, Is.EqualTo(0.9f).Within(0.001f));
+                Assert.That(surfaceLocal.y, Is.EqualTo(-0.4f).Within(0.001f));
+                Assert.That(position.y, Is.EqualTo(0.902f).Within(0.001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
+        private static MRUKAnchor CreateTestAnchor(
+            MRUKRoom room,
+            string name,
+            MRUKAnchor.SceneLabels label,
+            Vector3 topCenter,
+            bool hasVolume)
+        {
+            GameObject anchorObject = new(name);
+            anchorObject.transform.SetParent(room.transform);
+            anchorObject.transform.position = topCenter;
+            MRUKAnchor anchor = anchorObject.AddComponent<MRUKAnchor>();
+
+            SetInternalProperty(anchor, nameof(MRUKAnchor.Label), label);
+            if (hasVolume)
+            {
+                SetInternalProperty(
+                    anchor,
+                    nameof(MRUKAnchor.VolumeBounds),
+                    (Bounds?)new Bounds(new Vector3(0f, 0f, -0.4f), new Vector3(1f, 1f, 0.8f)));
+            }
+
+            room.Anchors.Add(anchor);
+            return anchor;
+        }
+
+        private static MRUKAnchor CreateTestWall(
+            MRUKRoom room,
+            string name,
+            Vector3 position,
+            Quaternion rotation)
+        {
+            GameObject wallObject = new(name);
+            wallObject.transform.SetParent(room.transform);
+            wallObject.transform.SetPositionAndRotation(position, rotation);
+            MRUKAnchor wall = wallObject.AddComponent<MRUKAnchor>();
+
+            SetInternalProperty(wall, nameof(MRUKAnchor.Label), MRUKAnchor.SceneLabels.WALL_FACE);
+            SetInternalProperty(wall, nameof(MRUKAnchor.PlaneRect), (Rect?)new Rect(-2f, 0f, 4f, 2f));
+            wall.PlaneBoundary2D.AddRange(new[]
+            {
+                new Vector2(-2f, 0f),
+                new Vector2(-2f, 2f),
+                new Vector2(2f, 2f),
+                new Vector2(2f, 0f)
+            });
+            room.Anchors.Add(wall);
+            room.WallAnchors.Add(wall);
+            return wall;
+        }
+
+        private static void SetInternalProperty<T>(object target, string propertyName, T value)
+        {
+            PropertyInfo property = target.GetType().GetProperty(
+                propertyName,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            property.SetValue(target, value);
         }
     }
 }

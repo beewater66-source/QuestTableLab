@@ -38,12 +38,12 @@ Die semantische Raumerkennung der Quest und die Erkennung individueller, selbst 
 | 1 | Repository, Unity-Projekt, Git-Arbeitsweise und Dokumentation | Abgeschlossen |
 | 2 | Erste Quest-App: Build, Installation, Passthrough und sichtbarer virtueller Inhalt | Abgeschlossen |
 | 3 | Manuelle Platzierung: Controller-Strahl, Verschieben, Fußbodenplatzierung und Reset | Abgeschlossen |
-| 4 | Semantische Raumerkennung: `TABLE` und anschließend `WALL_FACE` über MRUK | Als Nächstes |
+| 4 | Semantische Raumerkennung: `TABLE` und anschließend `WALL_FACE` über MRUK | In Arbeit |
 | 5 | Konfigurierbare Zuordnung semantischer Kategorien und Abschluss der Template-Grundlage | Geplant |
 
 ## Aktueller Stand
 
-Stand: **15. September 2026, 12:24 CEST**
+Stand: **15. September 2026, 12:52 CEST**
 
 Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
 
@@ -62,10 +62,16 @@ Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
 - aktivierte Scene-Unterstützung mit automatischer Berechtigungsanfrage beim Start
 - aktiviertes Application SpaceWarp als optionale Meta-Performancefunktion
 - `OVROverlayCanvas` für das raumfeste Schild mit getrennten Render-Layern
-- fünf bestandene Play-Mode-Tests
-- erfolgreiche Android-Build, Installation und abschließender Overlay-Smoke-Test auf der Quest 3
+- zehn bestandene Play-Mode-Tests
+- erfolgreiche Android-Build und Installation der ersten MRUK-/Scene-API-Fassung
+- automatische Suche nach dem nächstgelegenen geeigneten `TABLE`-Volumen
+- verständliche Statusmeldungen für fehlende Berechtigung, fehlendes Space Setup und fehlendes Tisch-Label
+- automatische Platzierung des Würfels auf der Tischoberkante; B setzt anschließend auf diese Position zurück
+- automatische Auswahl einer zum Benutzer gerichteten `WALL_FACE` für das Schild; horizontaler und vertikaler Versatz sowie Wandabstand sind konfigurierbar
+- Controller-Replatzierung von Würfel und Schild mit Begrenzung auf die jeweils erkannte Tisch- beziehungsweise Wandfläche
+- direkter Ankerwechsel per Drag-and-Drop: Beim Ziehen auf eine andere erkannte Fläche übernimmt das Objekt automatisch deren `TABLE`- beziehungsweise `WALL_FACE`-Anker
 
-Die aktuelle Arbeit liegt auf `feature/controller-input`. Sie ist noch nicht committed. Nach Dokumentations- und Diff-Prüfung wird der Meilenstein committed, veröffentlicht und per Pull Request in `main` übernommen.
+Meilenstein 3 wurde über Pull Request #3 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-table-placement`. Die semantische Tischplatzierung wurde auf zwei realen, im Space Setup erfassten Tischen erfolgreich bestätigt. Nach Korrektur der Canvas-Ausrichtung wurde auch die automatische Wandplatzierung des Schilds auf der Quest erfolgreich geprüft.
 
 ## Technische Basis
 
@@ -76,7 +82,7 @@ Die aktuelle Arbeit liegt auf `feature/controller-input`. Sie ist noch nicht com
 | Zielgerät | Meta Quest 3 |
 | Zielplattform | Android, ARM64 |
 | XR-Laufzeit | OpenXR mit Meta-Quest-Unterstützung |
-| Raumverständnis | Meta MR Utility Kit (ab Meilenstein 4) |
+| Raumverständnis | Meta MR Utility Kit 205.0.0 und Quest Scene API |
 | Versionsverwaltung | Git und GitHub |
 
 Der Meta XR Simulator und Meta XR Operator sind als zusätzliche Entwicklungswerkzeuge eingerichtet. Der verbindliche Nachweis für räumliche Interaktion, Darstellung und Tracking bleibt trotzdem der praktische Test auf der physischen Quest 3.
@@ -118,4 +124,4 @@ Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen se
 
 ## Nächster Schritt
 
-Zuerst wird Meilenstein 3 auf `feature/controller-input` gesichert und per Pull Request in `main` übernommen. Danach beginnt Meilenstein 4 auf einem neuen Branch mit MRUK-Raumdaten und der Erkennung einer semantisch als `TABLE` klassifizierten Fläche.
+Die flächengebundene Replatzierung und der direkte Wechsel auf einen tatsächlich anvisierten `TABLE`- oder `WALL_FACE`-Anker wurden auf der Quest 3 praktisch bestätigt. Als Nächstes folgt in Meilenstein 5 eine ein- und ausschaltbare Visualisierung der erkannten Raumlabels sowie eine konfigurierbare Zuordnung virtueller Inhalte zu diesen Labels.

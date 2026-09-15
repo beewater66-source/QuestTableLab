@@ -1,6 +1,6 @@
 # Lernjournal: QuestTableLab als AR-/MR-Grundlage
 
-Stand: 2026-09-15 12:24 CEST
+Stand: 2026-09-15 12:52 CEST
 Projekt: QuestTableLab  
 Zielgerät: Meta Quest 3
 
@@ -72,7 +72,7 @@ Der rechte Controller besitzt einen eindeutigen Zielstrahl. Der Würfel lässt s
 
 ### Meilenstein 4 – Semantische Raumlabels
 
-MRUK stellt Raumdaten bereit. Die Anwendung erkennt mindestens `TABLE`, unterscheidet geometrische Treffer von semantischer Bedeutung und platziert den Würfel relativ zur Tischfläche. Danach soll ein Schild an `WALL_FACE` mit konfigurierbarem Versatz folgen. **Als Nächstes.**
+MRUK stellt Raumdaten bereit. Die Anwendung erkennt `TABLE`, unterscheidet geometrische Treffer von semantischer Bedeutung und platziert den Würfel relativ zur Tischfläche. Der Gerätetest war auf beiden erfassten Tischen erfolgreich. Das Schild wird automatisch an einer geeigneten `WALL_FACE` platziert; sein Versatz und Wandabstand bleiben konfigurierbar. Nach Korrektur der Canvas-Ausrichtung bestand auch dieser Gerätetest. **In Arbeit; flächengebundene Replatzierung folgt.**
 
 ### Meilenstein 5 – Konfigurierbare Zuordnung und Template-Basis
 
@@ -98,6 +98,16 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-15 ca. 11:00–11:35 | Gemeinsam | Würfelsteuerung und Reset umgesetzt | Würfel per Trigger bewegbar, Strahl am Treffer verkürzt, B-Taste setzt den Würfel zurück. |
 | 2026-09-15 11:35–11:54 | Gemeinsam | Manuelle Fußbodenplatzierung umgesetzt und getestet | Grüne Vorschau auf Floor-Level, Platzierung mit Würfelunterkante auf dem Boden, 4 von 4 Play-Mode-Tests, erfolgreiche Quest-Build und bestandener Smoke-Test. |
 | 2026-09-15 12:00–12:24 | Gemeinsam | Meta Project Setup vervollständigt und UI auf Overlay-Rendering umgestellt | D3D11 für Standalone, Simulator, Operator/API Layer, Scene Permission und SpaceWarp eingerichtet; `HelloPanel` verwendet einen getrennten Overlay-Layer; 5 von 5 Play-Mode-Tests, Android-Build und Sichtprüfung bestanden. |
+| 2026-09-15 12:24–12:52 | Codex, von Christoph delegiert | Meilenstein 4 begonnen: MRUK und semantische Tischsuche integriert | Neuer Branch von PR-#3-Merge; Scene API lädt explizit vom Gerät, wählt das nächste geeignete `TABLE`-Volumen, platziert den Würfel auf dessen Oberkante und aktualisiert den Reset. 8 von 8 Play-Mode-Tests, Android-Build und Installation bestanden; räumliche Sichtprüfung steht aus. |
+| 2026-09-15 ca. 13:20 | Christoph | Semantische Tischplatzierung auf der Quest praktisch geprüft | Der Würfel wurde erfolgreich auf beiden im Space Setup erfassten Tischen platziert. Die Auswahl erfolgt abhängig von der Benutzerposition über den horizontal nächstgelegenen geeigneten Tisch, nicht über das Sichtfeld. |
+| 2026-09-15 ca. 13:25–13:40 | Codex, von Christoph delegiert | Automatische Schildplatzierung an `WALL_FACE` vorbereitet | Eine sichtbare und zum Benutzer gerichtete Wand wird gewählt. Horizontaler und vertikaler Versatz sowie Abstand vor der Wand sind einstellbar und werden auf die erkannte Wandfläche begrenzt. 10 von 10 Play-Mode-Tests, Android-Build und Installation bestanden; räumlicher Sichttest steht aus. |
+| 2026-09-15 ca. 13:42 | Gemeinsam | Ersten WALL_FACE-Sichttest ausgewertet | Der Würfel erschien korrekt, das Schild blieb unsichtbar. Das Quest-Log bestätigte Wandanker und Zielposition; die Canvas-Vorderseite war gegenüber der MRUK-Wandnormalen verkehrt ausgerichtet. Codex korrigierte die Rotation für den nächsten Build. |
+| 2026-09-15 ca. 13:47 | Christoph | Korrigierte WALL_FACE-Platzierung praktisch bestätigt | Das Schild erschien sichtbar und raumfest auf der erkannten Wand. Der abschließende Smoke-Test war grün. |
+| 2026-09-15 ca. 13:55–14:05 | Codex, von Christoph delegiert | Flächengebundene Replatzierung umgesetzt | Würfel und Schild lassen sich per Trigger greifen. Controllerstrahlen werden auf die semantische Tisch- beziehungsweise Wandebene projiziert und die Objektgrenzen innerhalb des jeweiligen Ankers gehalten. B setzt beide zurück. 11 von 11 Play-Mode-Tests und Android-Build bestanden; Quest-Sichttest folgt. |
+| 2026-09-15 ca. 14:08 | Christoph | Flächengebundene Interaktion auf der Quest bestätigt | Würfel und Schild ließen sich innerhalb ihrer Tisch- beziehungsweise Wandflächen verschieben; Begrenzung und gemeinsamer Reset funktionierten. Smoke-Test bestanden. |
+| 2026-09-15 ca. 14:10–14:20 | Codex, von Christoph delegiert | Ersten Ankerwechsel umgesetzt und im Editor geprüft | Zunächst wechselten A und rechter Stick zyklisch durch gültige `TABLE`- beziehungsweise `WALL_FACE`-Anker. 13 von 13 Play-Mode-Tests, Android-Build und Installation bestanden. Der anschließende Gerätetest zeigte, dass blindes Durchschalten räumlich unverständlich ist. |
+| 2026-09-15 ca. 14:22–14:39 | Gemeinsam | Ankerwechsel als räumliches Drag-and-Drop neu gefasst | Christoph präzisierte die gewünschte Interaktion: Das gegriffene Objekt soll beim Zeigen auf eine andere reale Fläche deren semantischen Anker übernehmen. Codex ersetzte die Tastenbelegung durch direkte MRUK-Raum-Raycasts auf Tischoberseiten und Wandflächen; 13 von 13 Play-Mode-Tests, Android-Build und Installation bestanden. |
+| 2026-09-15 ca. 14:40 | Christoph | Direkten semantischen Flächenwechsel bestätigt | Würfel und Schild übernahmen beim Ziehen auf eine andere passende reale Fläche automatisch den tatsächlich anvisierten `TABLE`- beziehungsweise `WALL_FACE`-Anker. Smoke-Test bestanden. |
 
 ## Zentrale Learnings
 
@@ -130,26 +140,35 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Eine grüne Vorschau zeigt vor dem Auslösen, wo der Würfel platziert wird. Beim Platzieren wird die halbe Würfelhöhe berücksichtigt, damit seine Unterkante statt seines Mittelpunkts auf dem Boden liegt.
 - Nach einer Transform-Änderung können Collider-Grenzen im selben Testschritt noch veraltet sein. `Physics.SyncTransforms()` stellt sicher, dass der Test die aktuelle Position bewertet.
 - Eine Reset-Funktion gehört früh in eine interaktive Testumgebung. Sie beschleunigt wiederholbare Gerätetests und verhindert, dass ein ungünstig platziertes Objekt den Versuch blockiert.
+- Die Quest Scene API liefert ein zuvor im Space Setup gespeichertes Raummodell. `TABLE` ist damit eine semantische Klassifizierung eines Raumankers und keine bei jedem Start neu ausgeführte allgemeine Bilderkennung.
+- MRUK ist die Unity-Hilfsschicht für das Laden, Abfragen und räumliche Ausrichten dieser Scene-API-Anker. Bei Volumenankern definiert MRUK die Transform-Position als Mittelpunkt der Oberseite.
+- Die automatische Platzierung ersetzt die manuelle Steuerung nicht. Nach erfolgreicher Tischsuche bleibt der Würfel bewegbar; die B-Taste kehrt nun zur semantisch ermittelten Tischposition zurück.
+- Die Tischwahl verwendet bewusst die horizontale Nähe und nicht das Sichtfeld. Für Status-UI ist dagegen die Blickrichtung sinnvoll: Das Schild bevorzugt eine sichtbare `WALL_FACE`, die zum Benutzer zeigt.
+- Eine gültige Wandposition garantiert noch keine sichtbare UI: MRUKs Wandnormale und die sichtbare Seite eines Unity-Canvas verwenden entgegengesetzte Vorwärtsrichtungen. Das Quest-Log half, Erkennungs- und Ausrichtungsfehler voneinander zu trennen.
+- Für flächengebundene Interaktion reicht eine semantische Startposition nicht. Jeder neue Controller-Zielpunkt wird in den lokalen Koordinatenraum des erkannten Ankers umgerechnet und dort einschließlich der Objektgröße begrenzt.
+- Zyklisches Umschalten ist bei räumlich verteilten Flächen zwar technisch einfach, aber ohne sichtbare Zuordnung unverständlich. Ein direkter Scene-API-Raycast verbindet die Controllerhandlung stattdessen mit der tatsächlich anvisierten realen Fläche.
 
 ## Aktueller Stand
 
 Erreicht:
 
-- Meilensteine 0 bis 3 vollständig umgesetzt und praktisch nachgewiesen.
-- Fünf Play-Mode-Tests bestanden.
-- Letzte Android-Build mit 0 Fehlern erstellt, installiert und einschließlich Overlay auf der Quest getestet.
+- Meilensteine 0 bis 3 vollständig umgesetzt, per Pull Request #3 gemergt und praktisch nachgewiesen.
+- Milestone-4-Fassung mit MRUK sowie bestätigter `TABLE`- und `WALL_FACE`-Platzierung implementiert.
+- Zehn Play-Mode-Tests bestanden.
+- Android-Build `build_985d85fb85af` mit 0 Fehlern erstellt und auf der Quest installiert.
 - Controller-Strahl, Bewegung, Bodenplatzierung und Reset funktionieren.
 - README, Lernjournal, Entscheidungen und Testprotokoll auf den allgemeinen Template-/Lernzweck ausgerichtet.
 
 Noch offen:
 
-- Änderungen auf `feature/controller-input` committen und veröffentlichen.
-- Pull Request nach `main` erstellen und mergen.
-- MRUK-Raumdaten und semantisches Label `TABLE` praktisch auslesen.
+- Würfel innerhalb seines erkannten Tisches kontrolliert replatzierbar machen.
+- Schild innerhalb seiner erkannten Wand kontrolliert replatzierbar machen.
+- Semantische Raumlabels per Stick-Klick ein- und ausblendbar visualisieren.
+- Virtuelle Inhalte über eine Konfiguration Labels wie `TABLE`, `COUCH` und `SCREEN` zuweisen.
 
 ## Nächster einzelner Lernschritt
 
-Den vollständigen Diff von Meilenstein 3 prüfen und nur die fachlich relevanten Dateien committen. Nach dem Pull Request beginnt Meilenstein 4 auf einem neuen Branch.
+Meilenstein 5 beginnen: Erkannte semantische Raumlabels und Flächengrenzen per rechtem Stick-Klick ein- und ausblendbar darstellen.
 
 ## Vorlage für neue Einträge
 

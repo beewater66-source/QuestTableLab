@@ -7,14 +7,25 @@ using UnityEngine;
 /// </summary>
 public sealed class ControllerCubeMover : MonoBehaviour
 {
+    private enum MovingTarget
+    {
+        None,
+        Cube,
+        WallUi
+    }
+
     [SerializeField] private ControllerInputProbe controllerAim;
     [SerializeField] private Transform target;
     [SerializeField] private string fallbackTargetName = "RoomFixedTestCube";
+    [SerializeField] private RectTransform wallTarget;
+    [SerializeField] private SemanticTablePlacementController semanticPlacement;
 
     private Collider targetCollider;
-    private bool isMoving;
+    private Collider wallTargetCollider;
+    private MovingTarget movingTarget;
     private float grabDistance;
     private Vector3 grabOffset;
+    private Vector2 wallGrabOffset;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
     private GameObject placementPreview;
@@ -34,6 +45,9 @@ public sealed class ControllerCubeMover : MonoBehaviour
         }
 
         targetCollider = target != null ? target.GetComponent<Collider>() : null;
+        semanticPlacement ??= FindFirstObjectByType<SemanticTablePlacementController>();
+        wallTarget ??= GameObject.Find("HelloPanel")?.GetComponent<RectTransform>();
+        wallTargetCollider = wallTarget != null ? wallTarget.GetComponent<Collider>() : null;
 
         if (target != null)
         {
@@ -76,7 +90,7 @@ public sealed class ControllerCubeMover : MonoBehaviour
     {
         if (!controllerAim.IsControllerActive)
         {
-            isMoving = false;
+            movingTarget = MovingTarget.None;
             placementPreview.SetActive(false);
             return;
         }
@@ -84,10 +98,21 @@ public sealed class ControllerCubeMover : MonoBehaviour
         var controller = controllerAim.Controller;
         var aimRay = controllerAim.AimRay;
         var hasFloorPoint = controllerAim.TryGetFloorPoint(out var floorPoint, out var floorDistance);
-        var hitsCubeFirst = targetCollider.Raycast(aimRay, out var cubeHit, controllerAim.RayLength)
-            && (!hasFloorPoint || cubeHit.distance < floorDistance);
+        bool hitsCube = targetCollider.Raycast(aimRay, out var cubeHit, controllerAim.RayLength);
+        RaycastHit wallHit = default;
+        bool hitsWallUi = wallTargetCollider != null
+            && wallTargetCollider.Raycast(aimRay, out wallHit, controllerAim.RayLength);
+        bool hasInteractableHit = hitsCube || hitsWallUi;
+        float nearestInteractableDistance = Mathf.Min(
+            hitsCube ? cubeHit.distance : float.PositiveInfinity,
+            hitsWallUi ? wallHit.distance : float.PositiveInfinity);
+        var interactableHit = hitsWallUi && (!hitsCube || wallHit.distance < cubeHit.distance)
+            ? MovingTarget.WallUi
+            : MovingTarget.Cube;
+        bool hitsInteractableFirst = hasInteractableHit
+            && (!hasFloorPoint || nearestInteractableDistance < floorDistance);
 
-        placementPreview.SetActive(hasFloorPoint && !hitsCubeFirst && !isMoving);
+        placementPreview.SetActive(hasFloorPoint && !hitsInteractableFirst && movingTarget == MovingTarget.None);
         if (placementPreview.activeSelf)
         {
             placementPreview.transform.SetPositionAndRotation(
@@ -101,48 +126,121 @@ public sealed class ControllerCubeMover : MonoBehaviour
             return;
         }
 
-        if (!isMoving && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, controller)
-            && hitsCubeFirst)
+        if (movingTarget == MovingTarget.None
+            && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, controller)
+            && hitsInteractableFirst)
         {
-            isMoving = true;
+            movingTarget = interactableHit;
             placementPreview.SetActive(false);
-            grabDistance = cubeHit.distance;
-            grabOffset = target.position - cubeHit.point;
-            Debug.Log("[QuestTableLab] Cube movement started.");
+            RaycastHit selectedHit = movingTarget == MovingTarget.Cube ? cubeHit : wallHit;
+            grabDistance = selectedHit.distance;
+            grabOffset = target.position - selectedHit.point;
+            if (movingTarget == MovingTarget.WallUi && semanticPlacement != null)
+            {
+                wallGrabOffset = semanticPlacement.GetWallLocalOffset(wallTarget.position, selectedHit.point);
+            }
+
+            Debug.Log(movingTarget == MovingTarget.Cube
+                ? "[QuestTableLab] Cube movement started."
+                : "[QuestTableLab] Wall UI movement started.");
         }
 
-        else if (!isMoving && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, controller)
+        else if (movingTarget == MovingTarget.None
+            && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, controller)
             && hasFloorPoint)
         {
             PlaceTargetOnFloor(floorPoint);
             return;
         }
 
-        if (!isMoving)
+        if (movingTarget == MovingTarget.None)
         {
             return;
         }
 
         if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, controller))
         {
-            target.position = aimRay.GetPoint(grabDistance) + grabOffset;
+            if (movingTarget == MovingTarget.Cube)
+            {
+                float footprintRadius = Mathf.Max(targetCollider.bounds.extents.x, targetCollider.bounds.extents.z);
+                float halfHeight = targetCollider.bounds.extents.y;
+                semanticPlacement?.TryAdoptTableFromRay(aimRay, controllerAim.RayLength);
+                if (semanticPlacement == null || !semanticPlacement.HasSelectedTable)
+                {
+                    target.position = aimRay.GetPoint(grabDistance) + grabOffset;
+                }
+                else if (semanticPlacement.TryGetTableConstrainedCubePosition(
+                        aimRay,
+                        grabOffset,
+                        footprintRadius,
+                        halfHeight,
+                        out Vector3 constrainedPosition))
+                {
+                    target.position = constrainedPosition;
+                }
+            }
+            else if (semanticPlacement != null)
+            {
+                if (semanticPlacement.TryAdoptWallFromRay(
+                        aimRay,
+                        controllerAim.RayLength,
+                        out bool wallChanged)
+                    && wallChanged)
+                {
+                    // On a different wall the old wall's local grab offset has no useful meaning.
+                    wallGrabOffset = Vector2.zero;
+                }
+
+                if (semanticPlacement.TryGetWallConstrainedUiPose(
+                         aimRay,
+                         wallGrabOffset,
+                         out Vector3 wallPosition,
+                         out Quaternion wallRotation))
+                {
+                    wallTarget.SetPositionAndRotation(wallPosition, wallRotation);
+                }
+            }
+
             return;
         }
 
-        isMoving = false;
-        Debug.Log($"[QuestTableLab] Cube movement finished at {target.position}.");
+        MovingTarget finishedTarget = movingTarget;
+        movingTarget = MovingTarget.None;
+        Physics.SyncTransforms();
+        Debug.Log(finishedTarget == MovingTarget.Cube
+            ? $"[QuestTableLab] Cube movement finished at {target.position}."
+            : $"[QuestTableLab] Wall UI movement finished at {wallTarget.position}.");
     }
 
     public void ResetTarget()
     {
-        isMoving = false;
+        movingTarget = MovingTarget.None;
         target.SetPositionAndRotation(initialPosition, initialRotation);
-        Debug.Log("[QuestTableLab] Cube reset to its initial pose.");
+        semanticPlacement?.ResetWallUi();
+        Physics.SyncTransforms();
+        Debug.Log("[QuestTableLab] Cube and wall UI reset to their semantic poses.");
+    }
+
+    /// <summary>
+    /// Replaces the pose used by the B-button reset. Semantic placement uses
+    /// this after a real table was found so reset returns to that table.
+    /// </summary>
+    public void SetResetPose(Vector3 position, Quaternion rotation, bool moveTarget = true)
+    {
+        initialPosition = position;
+        initialRotation = rotation;
+
+        if (moveTarget)
+        {
+            movingTarget = MovingTarget.None;
+            target.SetPositionAndRotation(initialPosition, initialRotation);
+            Physics.SyncTransforms();
+        }
     }
 
     public void PlaceTargetOnFloor(Vector3 floorPoint)
     {
-        isMoving = false;
+        movingTarget = MovingTarget.None;
         target.SetPositionAndRotation(GetRestingPosition(floorPoint), initialRotation);
         Physics.SyncTransforms();
         Debug.Log($"[QuestTableLab] Cube placed on floor at {target.position}.");
