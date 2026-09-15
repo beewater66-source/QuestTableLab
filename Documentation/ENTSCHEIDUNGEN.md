@@ -27,10 +27,60 @@ Die erste Würfelstufe verwendet bewusst eine feste Weltposition auf der Szenenw
 
 Die Beschriftung wird ebenfalls als World-Space-Canvas auf der Szenenwurzel platziert. Sie ist damit dem Würfel visuell zugeordnet, ohne dauerhaft im Sichtfeld zu stören.
 
-Diese feste Position ist nur ein Zwischenschritt. Im folgenden Schritt soll die Anwendung eine semantisch als Tisch klassifizierte Fläche aus den Quest-Raumdaten bestimmen und Würfel sowie Beschriftung relativ zu dieser Fläche platzieren.
+Diese feste Position war nur ein Zwischenschritt. Danach wurde zunächst die manuelle Controller- und Fußbodenplatzierung als eigener Meilenstein umgesetzt. Erst der folgende Meilenstein verwendet eine semantisch als Tisch klassifizierte Fläche aus den Quest-Raumdaten.
 
 ## 2026-09-15 – Fast Enter Play Mode als Projektstandard
 
 Für schnelle lokale Iterationen werden Domain Reload und Scene Reload beim Eintritt in den Play Mode deaktiviert. Play-Mode-Tests laden ihre benötigte Projektszene deshalb ausdrücklich und dürfen nicht von einem impliziten Szenenreset abhängen.
 
 Dieser Geschwindigkeitsvorteil bringt Verantwortung mit sich: Statische Felder, abonnierte Events und veränderte Laufzeitobjekte werden bei zukünftigen Funktionen bewusst zurückgesetzt. Bei schwer nachvollziehbaren XR-Zuständen wird ein Test mit vollständigem Reload als Kontrolllauf verwendet.
+
+## 2026-09-15 – QuestTableLab bleibt eine allgemeine Lern- und Template-Basis
+
+QuestTableLab bildet den allgemeinen Quest-AR-/MR-Grundaufbau ab: Git-Arbeitsweise, OpenXR, Passthrough, Steuerung, Platzierung, semantische Raumlabels und konfigurierbare Objektzuordnung.
+
+Der eigene 3D-gedruckte Prototyp mit prototypspezifischer Teileerkennung und Wartungs- oder Reparaturbegleitung wird später als separates Praktikumsprojekt angelegt. Nach Abschluss der allgemeinen Grundlage soll aus QuestTableLab ein bereinigtes Template entstehen, damit technische Basis und fachlicher Anwendungsfall nicht miteinander vermischt werden.
+
+## 2026-09-15 – Renderqualität auf dem Zielgerät
+
+Das mobile URP-Profil verwendet Render Scale 1,0 und 4x MSAA. Die vorherige Render Scale von 0,8 führte im Headset zu sichtbar unscharfen und jitternden Kanten. Die neue Einstellung wurde auf der Quest 3 als scharf bestätigt.
+
+Die Oberfläche des Quest-Systemmenüs kann durch die Compositor-Darstellung weiterhin anders wirken als normale Unity-Szenengeometrie. Maßgeblich ist deshalb die praktische Lesbarkeit und Stabilität der eigenen Anwendung auf dem Zielgerät.
+
+## 2026-09-15 – Eindeutiger rechter Controller-Strahl
+
+Der Teststrahl besitzt einen eigenen Aim-Knoten unter dem XR Tracking Space und wird ausschließlich aus der Pose des rechten Touch-Controllers gespeist. Bei aktiver Handsteuerung wird er ausgeblendet. Eine getrennte Hand-Ray-Interaktion kann später bewusst ergänzt werden, statt denselben sichtbaren Strahl unklar für beide Eingabearten zu verwenden.
+
+Der Strahl endet am nächsten gültigen Physik- oder Bodentreffer. Cyan kennzeichnet den normalen Zielzustand, Orange den gedrückten rechten Index-Trigger und Grün die gültige Bodenvorschau.
+
+## 2026-09-15 – Bedienung für die manuelle Platzierung
+
+Der rechte Index-Trigger übernimmt sowohl das Aufnehmen und Verschieben des Würfels als auch die bestätigte Platzierung am angezeigten Bodenpunkt. Die B-Taste setzt den Würfel auf seine beim Start gespeicherte Position und Rotation zurück.
+
+Diese kleine Belegung hält den Lernprototyp einfach, erlaubt aber bereits wiederholbare Interaktionstests ohne einen Neustart der Anwendung.
+
+## 2026-09-15 – Floor-Level-Platzierung vor MRUK-Semantik
+
+Die manuelle Bodenplatzierung aus Meilenstein 3 verwendet den auf der Quest kalibrierten Floor-Level-Ursprung und eine horizontale geometrische Ebene bei Y = 0. Sie benötigt noch keine Scene Permission und keine semantischen Raumdaten.
+
+Diese Trennung ist beabsichtigt: Controller-Raycast, Vorschau, Platzierungsrechnung und Reset sind unabhängig von MRUK nachgewiesen. In Meilenstein 4 wird diese funktionierende Platzierungsbasis um `TABLE` und anschließend `WALL_FACE` ergänzt. Der Versatz des automatisch an der Wand platzierten Schilds soll konfigurierbar bleiben.
+
+## 2026-09-15 – Eigene Runtime Assembly
+
+Die Anwendungsskripte unter `Assets/App/Scripts` werden in einer eigenen Runtime Assembly zusammengefasst, die ausdrücklich auf `Oculus.VR` verweist. Die Play-Mode-Test-Assembly referenziert diese Runtime Assembly.
+
+Dadurch können Tests die App-Komponenten direkt verwenden, ohne von der impliziten `Assembly-CSharp` abhängig zu sein. Gleichzeitig bleibt die Grenze zwischen Laufzeitcode und Testcode nachvollziehbar.
+
+## 2026-09-15 – Meta Project Setup vollständig, aber Empfehlungen einzeln bewerten
+
+Pflichtfehler des Meta Project Setup Tools werden behoben. Empfehlungen werden dagegen nicht pauschal über `Apply All` übernommen, sondern nach ihrem Nutzen für QuestTableLab bewertet.
+
+Für Windows Standalone wird D3D11 verwendet. Das unterstützt den Meta XR Simulator und den Meta XR Operator, verändert aber nicht die Android-Grafik-API der Quest-Build. Simulator, Operator und OpenXR API Layer bleiben als ergänzende Entwicklungswerkzeuge eingerichtet; der physische Quest-Test bleibt der verbindliche Nachweis.
+
+Scene Support und die automatische Laufzeit-Berechtigungsanfrage sind aktiviert, weil Meilenstein 4 unmittelbar MRUK-Raumdaten benötigt. Application SpaceWarp bleibt als Meta-Performanceempfehlung aktiviert und muss zusammen mit dem restlichen Rendering auf dem Zielgerät geprüft werden.
+
+## 2026-09-15 – World-Space-Schild über OVROverlayCanvas
+
+Das raumfeste `HelloPanel` verwendet `OVROverlayCanvas`, damit Text durch den Quest-Compositor klarer dargestellt werden kann. Für das statische Schild gelten Metas Textvorgaben: Depth-Tested-Komposition, Opaque-with-Clip, manuelles Redraw, deaktivierte dynamische Overlay-Auflösung und automatisch erzeugte Mipmaps.
+
+Der authored Canvas und seine Inhalte liegen auf dem eigenen versteckten Layer `Overlay UI`. Dieser Layer wird aus den Culling Masks der XR-Kameras entfernt; normale Szenengeometrie auf `Default` bleibt sichtbar. Ein separater temporärer Layer `OVROverlayCanvas Rendering` ist für die interne Overlay-Ausgabe reserviert und in den URP-Renderer-Masken enthalten.

@@ -105,3 +105,79 @@ Die raumfeste Darstellung eines einfachen virtuellen Objekts und einer zugeordne
 **Ergebnis: BESTANDEN**
 
 Milestone 2 besitzt nun neben dem praktischen Quest-Nachweis eine schnelle automatisierte Editor-Prüfung.
+
+### Test 004 – Controllersteuerung und manuelle Fußbodenplatzierung
+
+| Feld | Eintrag |
+|---|---|
+| Ausgeführt | 2026-09-15 10:30–11:54 CEST |
+| Git-Branch | `feature/controller-input` |
+| Ausgangscommit | `b223204` (Merge von Pull Request #2) |
+| Unity-Version | 6000.3.24f1 |
+| Zielgerät | Meta Quest 3 |
+| Betriebssystem | Meta Horizon OS 2.7 |
+| Testarten | Play Mode sowie Development-Build, Installation und Sicht-/Interaktionstest im Headset |
+| Ausgeführt von | Umsetzung, Tests und Build: Codex; praktische Bedienung und visuelle Bewertung: Christoph Dorn |
+
+**Erwartetes Ergebnis**
+
+- Ein einzelner Strahl folgt der Pose des rechten Touch-Controllers.
+- Der Strahl zeigt Triggerbetätigung farblich an und verschwindet beim Wechsel zur Handsteuerung.
+- Der Strahl endet am nächsten Würfel- oder Fußbodentreffer.
+- Der Würfel kann mit dem Trigger aufgenommen, bewegt und wieder raumfest abgelegt werden.
+- Auf dem kalibrierten Fußboden erscheint eine grüne Platzierungsvorschau.
+- Ein Triggerdruck auf den Fußboden platziert die Unterkante des Würfels auf Bodenniveau.
+- Die B-Taste setzt Position und Rotation des Würfels zurück.
+- Die Darstellung bleibt auf dem Gerät klar und ausreichend ruhig.
+
+**Beobachteter Lernverlauf**
+
+- Der erste Strahl erschien doppelt beziehungsweise magentafarben, war nicht korrekt am Controller verankert und blieb bei Handsteuerung aktiv.
+- Ursachen waren die Anbindung an eine zu allgemeine Hand-/Controller-Hierarchie und ein in der Android-Build nicht enthaltener dynamisch gesuchter URP-Unlit-Shader.
+- Nach dem Wechsel auf einen eigenen rechten Aim-Knoten und einen sicher enthaltenen URP/Lit-Shader bestätigte Christoph korrekte Pose, Farbe, Einzelanzeige und Ausblenden bei Handsteuerung.
+- Die Render Scale wurde von 0,8 auf 1,0 erhöht; 4x MSAA blieb aktiv. Christoph bestätigte anschließend eine scharfe Darstellung ohne das zuvor störende Kantenflimmern.
+- Würfelbewegung, verkürzter Zielstrahl und Reset wurden nacheinander auf der Quest bestätigt.
+- Ein automatisierter Bodentest erkannte zunächst veraltete Collider-Grenzen direkt nach der Transform-Änderung. Nach expliziter Physik-Synchronisation lag die Würfelunterkante korrekt bei Y = 0.
+- Abschließend bestanden 4 von 4 Play-Mode-Tests in 2,37 Sekunden.
+- Die letzte Development-Build wurde mit 0 Fehlern und 7 bereits bekannten Warnungen erzeugt, installiert und gestartet.
+- Christoph bestätigte die grüne Bodenvorschau und Platzierung mit „Green smoke“ als bestandenen Smoke-Test.
+
+**Ergebnis: BESTANDEN**
+
+Meilenstein 3 ist damit praktisch abgeschlossen. Die Bodenplatzierung verwendet den kalibrierten Floor-Level-Ursprung; semantische MRUK-Flächen sind Gegenstand von Meilenstein 4.
+
+### Test 005 – Project-Setup-Vervollständigung und Overlay-Canvas
+
+| Feld | Eintrag |
+|---|---|
+| Ausgeführt | 2026-09-15 12:00–12:24 CEST |
+| Git-Branch | `feature/controller-input` |
+| Ausgangscommit | `b223204` (Merge von Pull Request #2) |
+| Unity-Version | 6000.3.24f1 |
+| Zielgerät | Meta Quest 3 |
+| Testarten | Meta Project Setup, Play Mode, Android-Development-Build, Installation und Start |
+| Ausgeführt von | Project-Setup-Auswahl: Christoph Dorn; Overlay-Konfiguration, Tests, Build und Installation: Codex |
+
+**Geprüft und umgesetzt**
+
+- Rote Pflichtfehler des Meta Project Setup Tools sind beseitigt.
+- D3D11 ist für Windows Standalone eingerichtet; die Android-Grafikkonfiguration der Quest bleibt davon getrennt.
+- Meta XR Simulator sowie Meta XR Operator und dessen OpenXR API Layer sind eingerichtet.
+- Scene Support ist im Manifest vorhanden und `OVRManager` fordert die Laufzeitberechtigung beim Start an.
+- Application SpaceWarp ist als optionale Meta-Performancefunktion aktiviert.
+- `HelloPanel` verwendet `OVROverlayCanvas` mit Depth-Tested-Komposition, Opaque-with-Clip, manuellem Redraw und Mipmaps.
+- `HelloPanel` und sein Inhalt liegen auf dem versteckten Layer `Overlay UI`; die XR-Kameras rendern diesen Layer nicht zusätzlich direkt.
+- Der temporäre Overlay-Render-Layer ist in den URP-Renderer-Masken enthalten.
+
+**Automatisiertes Ergebnis**
+
+- Ein erster neuer Overlay-Test war zu streng und bewertete eine von `OVROverlayCanvas` zur Laufzeit erzeugte Hilfskamera fälschlich als authored UI-Inhalt.
+- Nach Eingrenzung auf `HelloPanel` und `Message` bestanden 5 von 5 Play-Mode-Tests in 2,85 Sekunden.
+- Android-Build `build_586a062b76dd` bestand in 97,6 Sekunden mit 0 Fehlern und 7 bekannten Hinweisen.
+- APK-Größe: 65.170.237 Byte, rund 65,2 MB.
+- Die APK wurde auf der verbundenen Quest 3 installiert und `com.christophdorn.questtablelab` erfolgreich gestartet.
+- Christoph bestätigte anschließend im Headset die korrekte Darstellung und die weiterhin funktionierende Interaktion mit „Green“.
+
+**Ergebnis: BESTANDEN**
+
+Der vollständige Stand aus Project Setup, Overlay-Darstellung und bisheriger Controllerinteraktion ist damit im Editor und auf der Quest 3 nachgewiesen.

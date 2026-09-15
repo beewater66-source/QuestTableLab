@@ -1,217 +1,155 @@
-# Lernjournal: Von Git-Grundlagen zum AR-Wartungsprototyp
+# Lernjournal: QuestTableLab als AR-/MR-Grundlage
 
-Stand: 2026-09-15 08:48 CEST  
+Stand: 2026-09-15 12:24 CEST
 Projekt: QuestTableLab  
 Zielgerät: Meta Quest 3
 
 ## Übergeordnetes Lernziel
 
-Dieses Projekt dient nicht nur dazu, eine einzelne Unity-Anwendung zu bauen. Es soll einen nachvollziehbaren Lernweg abbilden:
+QuestTableLab ist meine allgemeine Lern- und Testumgebung für Mixed Reality. Ich möchte damit den gesamten Weg von meinen ersten praktisch verwendeten Git-Grundlagen bis zu einer wiederverwendbaren Quest-AR-Basis verstehen und dokumentieren.
 
-1. Git und GitHub im praktischen Projektalltag verstehen.
-2. Eine erste Mixed-Reality-Anwendung auf der Meta Quest 3 ausführen.
-3. Einen virtuellen Würfel auf einer real erkannten Tischfläche platzieren.
-4. Semantische Raumlabels der Quest auslesen und sichtbar machen.
-5. Virtuelle Inhalte erkannten realen Flächen oder Objekten zuweisen.
-6. Das Gelernte auf einen einfachen, nicht funktionalen 3D-Druck-Prototyp übertragen.
-7. Bauteile des Prototyps erkennen und eine geführte Wartungs- oder Reparaturabfolge darstellen.
+Der Lernweg umfasst:
 
-Der Lernerfolg wird deshalb nicht nur an funktionierendem Code gemessen. Ebenso wichtig sind verständliche Git-Schritte, dokumentierte Entscheidungen, reproduzierbare Tests und die Fähigkeit, das Vorgehen auf ein zweites Objekt zu übertragen. Zusätzlich wird festgehalten, welche Arbeit selbst ausgeführt und welche Arbeit an Codex als technischen Worker delegiert wurde.
+1. Git und GitHub im Projektalltag verstehen.
+2. Eine eigene Mixed-Reality-Anwendung auf der Quest 3 bauen, installieren und testen.
+3. Virtuelle Inhalte raumfest anzeigen und manuell steuern beziehungsweise platzieren.
+4. Semantische Raumlabels wie `TABLE` und `WALL_FACE` auslesen und nutzen.
+5. Reale Kategorien konfigurierbar virtuellen Inhalten zuweisen.
+6. Aus dem stabilen Grundprojekt später ein bereinigtes Template ableiten.
+
+Der nicht funktionale 3D-Druck-Prototyp mit eigener Teileerkennung und Wartungs- oder Reparaturbegleitung gehört zu einem **separaten späteren Praktikumsprojekt**. Er soll auf dem hier erarbeiteten Template aufbauen. QuestTableLab darf allgemeine Grundlagen für Objektzuordnung und spätere Erkennung vorbereiten, enthält aber keine prototypspezifische Wartungslogik.
 
 ## Rollen und Arbeitsweise
 
 ### Selbst ausgeführt – Christoph Dorn
 
-- Unity Editor 6000.3.24f1 installiert.
-- Android Build Support einschließlich SDK, NDK und OpenJDK installiert.
-- Unity-ID beziehungsweise Organisation eingerichtet.
-- Meta-Developer-Account eingerichtet und Meta Quest Developer Hub 6.5 installiert.
-- Developer Mode und USB-Debugging auf der Quest 3 aktiviert.
-- Quest 3 per USB verbunden und die Verbindung im Developer Hub hergestellt.
-- GitHub-Repository `QuestTableLab` erstellt und lokal unter `E:\GitHub` bereitgestellt.
-- Unity-Projekt über die grafische Oberfläche angelegt.
-- Den versehentlich verschachtelten Projektordner erkannt.
-- Den vollständigen Projektinhalt nach Abschluss des Kopiervorgangs in die richtige Repository-Wurzel verschoben.
-- Projekt anschließend im Unity Hub neu verknüpft.
-- Build Profile auf Meta/Android umgestellt und notwendige XR-Einrichtung in Unity angestoßen.
-- Commits in GitHub Desktop erstellt.
-- Feature-Branch erstellt und mit `Publish branch` auf GitHub veröffentlicht.
-- Fehlermeldungen und unerwartete Zustände mit Screenshots gemeldet und vor dem Fortfahren geprüft.
-- Die installierte Anwendung im Headset praktisch geprüft und Passthrough sowie die sichtbare Meldung bestätigt.
+- Unity 6000.3.24f1 und Android Build Support einschließlich SDK, NDK und OpenJDK installiert.
+- Unity-/Meta-Developer-Konten, Developer Hub, Developer Mode und USB-Debugging eingerichtet.
+- Quest 3 verbunden und als Entwicklungsgerät geprüft.
+- Repository und Unity-Projekt angelegt sowie den versehentlich verschachtelten Projektordner korrigiert.
+- Projekt im Unity Hub neu verknüpft und Build Profile auf Meta/Android umgestellt.
+- Git-Branches, Commits, Publish/Push und Pull Requests praktisch durchgeführt.
+- Build-Ergebnisse im Headset bewertet und Fehlerbilder präzise zurückgemeldet.
+- Passthrough, Raumstabilität, Beschriftung, Bildschärfe, Controller-Strahl, Handwechsel, Würfelbewegung, Reset und Bodenplatzierung praktisch geprüft.
+- Den abschließenden Meilenstein-3-Test mit „Green smoke“ als bestanden bestätigt.
+- Pflichtfehler und Hinweise im Meta Project Setup Tool geprüft und behoben.
+- Windows-Rendering auf D3D11 umgestellt, Meta XR Simulator installiert und die Scene-Berechtigungsanfrage aktiviert.
+- Application SpaceWarp als Meta-Performanceempfehlung aktiviert.
 
-### An Codex/Worker delegiert
+### An Codex delegiert
 
-- Einen strukturierten Lern- und Projektfahrplan entwickeln.
-- Unity-Version, Template und geeigneten Meta-XR-/OpenXR-Technikweg bewerten.
-- Git-Begriffe und die jeweils nächste Aktion erklären.
-- Die Projektordnerstruktur unter `Assets/App` anlegen.
-- Die konkrete XR-Paket- und Projekteinstellung prüfen und fertigstellen.
-- Meta XR Core SDK, Interaction SDK, MR Utility Kit, Unity OpenXR und Meta OpenXR installieren beziehungsweise verifizieren.
-- Android-, OpenXR-, Passthrough-, Plane-, Raycast-, Anchor- und Meshing-Einstellungen prüfen.
-- Android-Paketname, Produktname und Herstellerangabe setzen.
-- Generiertes Android-Manifest und Meta-Projekteinstellungen anwenden beziehungsweise prüfen.
-- Unity-Kompilierung, Konsolenzustand, Android-Zielplattform, SDK-Stufen, ARM64 und Geräteverbindung technisch kontrollieren.
-- Fehlgeschlagene Background Tasks untersuchen und als optionalen Meta-XR-Simulator einordnen.
-- Lernjournal, Gesamtfahrplan und Verlinkung im README erstellen und fortlaufend pflegen.
-- Eine minimale Passthrough-Szene mit XR-Kamera und schwebender Testmeldung erstellen.
-- Die erste Android-Build erzeugen, auf der Quest installieren, starten und technisch über OpenXR- und Android-Laufzeitdaten prüfen.
+- Lern- und Projektfahrplan strukturieren sowie Git- und Unity-Schritte erklären.
+- Eigene Projektstruktur unter `Assets/App` anlegen.
+- Android-, OpenXR-, Meta-XR- und Passthrough-Konfiguration prüfen.
+- Szenenobjekte, Controllersteuerung und Platzierungslogik in der laufenden Unity-Umgebung umsetzen.
+- Renderqualität untersuchen und korrigieren.
+- Play-Mode-Tests entwickeln, ausführen und Fehlerursachen beheben.
+- Android-Builds erzeugen, installieren und starten.
+- Dokumentation, Entscheidungen und Testergebnisse fortlaufend pflegen.
+- `HelloPanel` auf `OVROverlayCanvas` mit getrennten Render-Layern umstellen und automatisch prüfen.
 
-### Gemeinsam entschieden oder überprüft
+### Gemeinsame Arbeitsregel
 
-- Das erste Ziel bleibt bewusst klein: Passthrough, Tischfläche und ein platzierbarer Würfel.
-- Danach folgen semantische Labels und erst anschließend der eigene 3D-Druck-Prototyp.
-- `main` bleibt zunächst stabil; der Quest-Aufbau erfolgt auf `feature/quest-bootstrap`.
-- Der optionale Meta-XR-Simulator wird vorerst nicht weiterverfolgt, weil direkt auf der physischen Quest 3 getestet werden kann.
-- Application SpaceWarp und Meta-Platform-Dienste sind für den ersten Prototyp nicht erforderlich.
-- Die Arbeit wird künftig in einzelnen, überprüfbaren Schritten fortgesetzt.
-- Für den Bootstrap ist eine an der Kamera befestigte Meldung sinnvoll, weil sie beim ersten Start sicher sichtbar ist. Raumfeste Inhalte werden erst im nächsten Meilenstein umgesetzt.
+Es wird jeweils ein überschaubarer Schritt umgesetzt und auf dem Gerät geprüft. Ein technischer Build-Erfolg zählt nicht allein als Abschluss: Für räumliche und visuelle Funktionen ist Christophs praktischer Test in der Quest maßgeblich. Erst nach bestandenem Smoke-Test werden Dokumentation und Git-Stand abgeschlossen.
 
-## Lernphasen und Erfolgskriterien
+## Meilensteine und Erfolgskriterien
 
-### Phase 0 – Arbeitsweise und Versionsverwaltung
+### Meilenstein 0 – Voraussetzungen
 
-Ziel: Änderungen kontrolliert durchführen und bei Bedarf nachvollziehen können.
+Unity, Android-Werkzeuge, Developer-Zugang und Geräteverbindung sind einsatzbereit. **Abgeschlossen.**
 
-Erfolgskriterien:
+### Meilenstein 1 – Repository und Projekt
 
-- Repository lokal und auf GitHub vorhanden.
-- Unterschied zwischen Repository, Commit, Branch, Publish und Push verstanden.
-- Änderungen werden in kleinen, sinnvoll benannten Commits gespeichert.
-- `main` bleibt stabil; experimentelle Arbeit findet zunächst in einem Branch statt.
-- Generierte lokale Unity-Ordner wie `Library`, `Temp` und `Logs` werden nicht versioniert.
+Repository, Unity-Projektstruktur, `.gitignore`, erste Commits, Branch- und Pull-Request-Arbeitsweise sind vorhanden. **Abgeschlossen.**
 
-### Phase 1 – Technischer Quest-Grundaufbau
+### Meilenstein 2 – Erste Quest-Anwendung
 
-Ziel: Eine leere Anwendung zuverlässig auf der Quest 3 starten können.
+Eine eigene Development-Build läuft auf der Quest 3 und kombiniert Passthrough mit sichtbaren virtuellen Inhalten. Würfel und Beschriftung sind raumfest. **Abgeschlossen.**
 
-Erfolgskriterien:
+### Meilenstein 3 – Manuelle Platzierung
 
-- Quest 3 wird vom Entwicklungsrechner erkannt.
-- Android-, OpenXR- und Meta-XR-Konfiguration kompiliert fehlerfrei.
-- Eine Entwicklungs-Build lässt sich installieren und starten.
-- Passthrough zeigt die reale Umgebung.
+Der rechte Controller besitzt einen eindeutigen Zielstrahl. Der Würfel lässt sich aufnehmen, bewegen, auf dem kalibrierten Fußboden ablegen und zurücksetzen. Editor-Tests und Gerätetest bestehen. **Abgeschlossen.**
 
-### Phase 2 – Würfel auf dem Tisch
+### Meilenstein 4 – Semantische Raumlabels
 
-Ziel: Den vollständigen kleinen AR-/MR-Arbeitsablauf verstehen.
+MRUK stellt Raumdaten bereit. Die Anwendung erkennt mindestens `TABLE`, unterscheidet geometrische Treffer von semantischer Bedeutung und platziert den Würfel relativ zur Tischfläche. Danach soll ein Schild an `WALL_FACE` mit konfigurierbarem Versatz folgen. **Als Nächstes.**
 
-Erfolgskriterien:
+### Meilenstein 5 – Konfigurierbare Zuordnung und Template-Basis
 
-- Eine reale Tischfläche wird erkannt.
-- Ein Platzierungshinweis reagiert auf einen gültigen Treffer.
-- Ein Würfel kann bewusst auf dem Tisch platziert werden.
-- Position und Ausrichtung bleiben nachvollziehbar stabil.
-- Der Versuch wird auf dem Gerät getestet und im Testprotokoll festgehalten.
-
-### Phase 3 – Semantische Labels und Objektzuweisung
-
-Ziel: Verstehen, welche Bedeutung die Quest ihrer erfassten Umgebung zuordnet.
-
-Erfolgskriterien:
-
-- Verfügbare Raumflächen und ihre semantischen Labels werden ausgelesen.
-- Labels wie Tisch, Wand, Boden oder Decke werden sichtbar dargestellt oder protokolliert.
-- Die Anwendung unterscheidet zwischen geometrischem Treffer und semantischer Bedeutung.
-- Virtuelle Inhalte werden nur passenden Flächen zugewiesen.
-- Grenzen und Fehlklassifikationen werden dokumentiert.
-
-### Phase 4 – Eigener 3D-Druck-Prototyp
-
-Ziel: Den Tischversuch auf ein kontrolliertes reales Demonstrationsobjekt übertragen.
-
-Erfolgskriterien:
-
-- Ein einfacher, nicht funktionaler Prototyp mit klar unterscheidbaren Bauteilen ist konstruiert und gedruckt.
-- Bauteile besitzen stabile Namen, IDs und definierte Wartungsschritte.
-- Die Anwendung kann ein Bauteil auswählen oder einer erkannten Position zuordnen.
-- Hinweise markieren das richtige Teil und erklären den nächsten Arbeitsschritt.
-- Eine kurze Wartungs- oder Reparatursequenz kann vollständig durchlaufen werden.
-
-Hinweis: Die semantischen Raumlabels der Quest erkennen zunächst Kategorien der Umgebung. Eine zuverlässige Erkennung eigener Bauteile ist eine zusätzliche technische Aufgabe und wird nicht automatisch allein durch Scene Understanding gelöst. Dafür werden später gezielt Marker, räumliche Anker, Modellabgleich oder ein eigenes Erkennungsverfahren bewertet.
+Semantische Kategorien und virtuelle Inhalte werden über eine verständliche Konfiguration verbunden. Grenzen und Fehlerfälle sind dokumentiert. Anschließend kann aus dem bereinigten Stand ein wiederverwendbares Template für neue Quest-AR-Projekte entstehen. **Geplant.**
 
 ## Zeitlicher Verlauf
 
-Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte stammen aus der Commit-Historie; Gesprächs- und Lernzeitpunkte werden beim Dokumentieren ergänzt.
+Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte stammen aus der Commit-Historie; Gesprächs- und Testzeitpunkte wurden beim Dokumentieren ergänzt.
 
-| Zeitpunkt | Ausgeführt von | Ereignis | Ergebnis / Lernfortschritt | Nachweis |
-|---|---|---|---|---|
-| 2026-09-14, vor Projektbeginn | Christoph | Entwicklungsumgebung und Quest vorbereitet | Unity mit Android-Werkzeugen, Developer Hub, Developer Mode und USB-Debugging einsatzbereit. | Manuell geprüfter Ausgangsstand |
-| 2026-09-14 09:19 | Christoph | Repository initialisiert | Erster Ausgangspunkt auf `main` vorhanden. | Commit `2cf6743` |
-| 2026-09-14 11:05 | Christoph | Unity-Projekt erstellt | Unity 6.3 URP als technische Projektbasis angelegt. | Commit `30898c4` |
-| 2026-09-14, vormittags | Christoph, mit Anleitung durch Codex | Verschachtelten Projektordner korrigiert | Projektinhalt aus `QuestTableLab/QuestTableLab` an die richtige Repository-Wurzel verschoben und im Hub neu verknüpft. | Arbeitsablauf |
-| 2026-09-14 11:41 | Codex, von Christoph delegiert | Projektstruktur angelegt | Eigene Bereiche für Szenen, Skripte, Prefabs, Art und UI geschaffen; anschließend von Christoph committed. | Commit `0e289dc` |
-| 2026-09-14, vormittags | Christoph, mit Anleitung durch Codex | Ersten praktischen Branch erstellt | `feature/quest-bootstrap` trennt den Quest-Aufbau vom stabilen Stand auf `main`. | Git-Branch |
-| 2026-09-14, mittags | Codex, von Christoph delegiert | Quest-/OpenXR-Einrichtung fertiggestellt und geprüft | Pakete, Manifest, Projekteinstellungen und Geräteverbindung technisch validiert. | Unity-/Android-Prüfung |
-| 2026-09-14 12:59 | Christoph | Quest-/OpenXR-Grundkonfiguration committed | Android-, OpenXR- und Meta-XR-Basis auf dem Feature-Branch gespeichert. | Commit `9bb4aa1` |
-| 2026-09-14, ca. 13:00 | Christoph | Branch veröffentlicht | Lokaler Feature-Branch wurde mit `Publish branch` auf GitHub verfügbar gemacht. | `origin/feature/quest-bootstrap` |
-| 2026-09-14 ab 13:03 | Codex, von Christoph delegiert | Lernjournal begonnen und erweitert | Technische Arbeit, Lernziel und Arbeitsaufteilung werden gemeinsam nachvollziehbar. | Diese Datei |
-| 2026-09-15 08:24–08:38 | Codex, von Christoph delegiert | Erste Passthrough-Anwendung gebaut und ausgeliefert | XR-Kamera, Passthrough und Testmeldung eingerichtet; Android-Build mit 0 Fehlern erzeugt, installiert und gestartet. | Test 001 |
-| 2026-09-15 08:48 | Christoph | Ersten Mixed-Reality-Gerätetest bestätigt | Reale Umgebung und `HELLO QUESTTABLELAB` im Headset sichtbar; Meldung folgt erwartungsgemäß der Kamera. | Test 001 bestanden |
-| 2026-09-15, vormittags | Christoph | Pull Request #1 gemergt und Bootstrap-Branch auf GitHub gelöscht | Der geprüfte Quest-Bootstrap wurde in `main` übernommen; die abgeschlossene Arbeitslinie wurde aufgeräumt. | Merge-Commit `d93dd39` |
-| 2026-09-15 09:13–09:27 | Codex, von Christoph delegiert | Raumfesten Testwürfel und raumfeste Beschriftung umgesetzt, gebaut und ausgeliefert | 20-cm-Würfel sowie World-Space-Canvas außerhalb der XR-Kamera angelegt; drei inkrementelle Android-Builds erstellt und installiert. | Test 002 |
-| 2026-09-15 09:28 | Christoph | Raumfeste Darstellung im Headset bestätigt | Würfel bleibt auch bei schnellen Kopfbewegungen stabil; die korrigierte Beschriftung steht gut lesbar über ihm. | Test 002 bestanden |
-| 2026-09-15, vormittags | Christoph | Beschriftung im Unity Editor manuell feinjustiert | Schriftgröße, Panelgröße und räumliche Position wurden anhand des Geräteeindrucks verbessert. | Szenenänderung auf `feature/table-cube-placement` |
-| 2026-09-15 10:10–10:16 | Codex, von Christoph delegiert | Erste automatisierte Play-Mode-Tests eingerichtet | Tests prüfen Raumwurzel, Pose des Würfels, World-Space-Canvas und visuelle Nähe der Beschriftung; 2 von 2 Tests bestanden. | Test 003 |
+| Zeitpunkt | Ausgeführt von | Ereignis | Ergebnis / Lernfortschritt |
+|---|---|---|---|
+| 2026-09-14, vor Projektbeginn | Christoph | Entwicklungsumgebung und Quest vorbereitet | Unity, Android-Werkzeuge, Developer Hub, Developer Mode und USB-Debugging einsatzbereit. |
+| 2026-09-14 09:19 | Christoph | Repository initialisiert | Erster Ausgangspunkt auf `main`, Commit `2cf6743`. |
+| 2026-09-14 11:05 | Christoph | Unity-Projekt erstellt | Unity-6.3-URP-Projekt, Commit `30898c4`. |
+| 2026-09-14, vormittags | Christoph mit Anleitung durch Codex | Verschachtelten Projektordner korrigiert | Projektinhalt in die Repository-Wurzel verschoben und im Hub neu verknüpft. |
+| 2026-09-14 11:41 | Codex, von Christoph delegiert | Projektstruktur angelegt | Eigene Bereiche für Szenen, Skripte, Prefabs, Art und UI; anschließend Commit `0e289dc`. |
+| 2026-09-14 bis 2026-09-15 08:48 | Gemeinsam | Quest-Bootstrap umgesetzt und getestet | Pakete, OpenXR, Passthrough, Build, Installation und sichtbare Testmeldung nachgewiesen. |
+| 2026-09-15, vormittags | Christoph | Pull Request #1 gemergt | Bootstrap in `main`, Merge-Commit `d93dd39`; Branch gelöscht. |
+| 2026-09-15 09:13–09:28 | Gemeinsam | Raumfesten Würfel und Beschriftung umgesetzt | Würfel bleibt bei schnellen Kopfbewegungen stabil; Schild nach manueller Feinjustierung gut lesbar. |
+| 2026-09-15 10:10–10:16 | Codex, von Christoph delegiert | Erste Play-Mode-Tests eingerichtet | Szenenstruktur und räumliche Zuordnung mit 2 von 2 Tests bestätigt. |
+| 2026-09-15, vormittags | Christoph | Pull Request #2 gemergt | Raumfester Würfel, Beschriftung und Testbasis in `main`; Merge-Commit `b223204`. |
+| 2026-09-15 10:30–10:54 | Gemeinsam | Darstellungs- und Controllerprobleme untersucht | Render Scale von 0,8 auf 1,0 erhöht; Strahl an einen eigenen rechten Controller-Aim gebunden; Darstellung auf der Quest bestätigt. |
+| 2026-09-15 ca. 11:00–11:35 | Gemeinsam | Würfelsteuerung und Reset umgesetzt | Würfel per Trigger bewegbar, Strahl am Treffer verkürzt, B-Taste setzt den Würfel zurück. |
+| 2026-09-15 11:35–11:54 | Gemeinsam | Manuelle Fußbodenplatzierung umgesetzt und getestet | Grüne Vorschau auf Floor-Level, Platzierung mit Würfelunterkante auf dem Boden, 4 von 4 Play-Mode-Tests, erfolgreiche Quest-Build und bestandener Smoke-Test. |
+| 2026-09-15 12:00–12:24 | Gemeinsam | Meta Project Setup vervollständigt und UI auf Overlay-Rendering umgestellt | D3D11 für Standalone, Simulator, Operator/API Layer, Scene Permission und SpaceWarp eingerichtet; `HelloPanel` verwendet einen getrennten Overlay-Layer; 5 von 5 Play-Mode-Tests, Android-Build und Sichtprüfung bestanden. |
 
-## Bisherige Learnings
+## Zentrale Learnings
 
 ### Git und GitHub
 
-- Ein Repository ist der gesamte versionierte Projektbereich; ein Commit ist ein benannter Zwischenstand darin.
-- Ein Commit auf `main` ist kein vollständiges Vollbackup des Rechners. Er sichert nur versionierte Dateien. Erst durch Push oder Publish liegt der Stand zusätzlich auf GitHub.
-- Ein Branch ist eine getrennte Entwicklungslinie. Dadurch kann der stabile Stand auf `main` erhalten bleiben, während ein neuer Aufbau ausprobiert wird.
-- `Publish branch` erscheint, wenn ein Branch bisher nur lokal existiert. Nach der Veröffentlichung werden spätere Änderungen mit `Push origin` hochgeladen.
-- Gute Commit-Namen beschreiben die Absicht einer zusammengehörigen Änderung, beispielsweise `chore: configure Meta Quest OpenXR`.
+- Ein Repository ist der versionierte Projektbereich; ein Commit ist ein benannter Zwischenstand darin.
+- Ein lokaler Commit ist kein vollständiges Rechner-Backup. Erst Push beziehungsweise Publish legt den versionierten Stand zusätzlich auf GitHub ab.
+- Ein Branch ist eine getrennte Entwicklungslinie. Ein Pull Request vergleicht diese Linie mit `main`, ermöglicht eine Prüfung und führt die Änderungen anschließend kontrolliert in den Stamm zusammen.
+- Nach einem Merge kann der abgeschlossene Feature-Branch gelöscht werden; der Inhalt bleibt über `main` und die Historie erhalten.
 
-### Projektanlage
+### Unity- und Quest-Workflow
 
-- Beim verwendeten Unity-/GitHub-Workflow darf Projekt- und Repository-Erstellung nicht unkontrolliert doppelt erfolgen. Sonst kann Unity einen zweiten gleichnamigen Ordner innerhalb des bereits vorhandenen Ordners erzeugen.
-- Vor dem Erstellen muss geprüft werden, ob der angezeigte Zielpfad die Repository-Wurzel oder deren übergeordneten Ordner meint.
-- Nach Dateioperationen muss erst deren Abschluss abgewartet werden, bevor aus einem vermeintlich unvollständigen Zustand weitere Schlüsse gezogen werden.
-- Viele geänderte Dateien nach der XR-Einrichtung sind normal. Entscheidend ist, dass temporäre Unity-Verzeichnisse durch `.gitignore` ausgeschlossen bleiben.
+- Ein erfolgreicher Editor-Test ersetzt keinen Gerätetest. Raumgefühl, Lesbarkeit, Tracking und Bildqualität müssen im Headset bewertet werden.
+- Ein Objekt auf der Szenenwurzel ist unabhängig von der XR-Kamera und kann dadurch raumfest erscheinen.
+- Ein eigener Runtime-Assembly-Bereich macht App-Code aus Play-Mode-Test-Assemblies sauber referenzierbar.
+- Fast Enter Play Mode bleibt mit deaktiviertem Domain- und Scene-Reload aktiv. Tests müssen ihre Szene ausdrücklich laden und eigener Laufzeitzustand muss bewusst zurückgesetzt werden.
 
-### Lern- und Arbeitsmethode
+### Rendering und Controller
 
-- Beim erstmaligen Einrichten wird jeweils nur ein Schritt ausgeführt und überprüft, bevor der nächste folgt.
-- Fehlermeldungen werden nach ihrer tatsächlichen Auswirkung bewertet. Der fehlgeschlagene optionale Meta-XR-Simulator blockiert Tests auf der physisch angeschlossenen Quest 3 nicht.
-- Eine erfolgreiche Paketinstallation ist noch kein erfolgreicher Prototyp. Der nächste relevante Beweis ist eine installierte und gestartete Build auf dem Zielgerät.
-- Entscheidungen und Irrwege werden dokumentiert, weil sie Teil des Lernergebnisses sind und spätere Projekte beschleunigen.
-- Der erste IL2CPP-/ARM64-Build kann wegen der einmaligen nativen Übersetzung aller XR-Abhängigkeiten deutlich länger dauern als spätere Builds.
-- Ein kameragebundenes UI bleibt stets im Sichtfeld und bewegt sich mit dem Kopf. Für einen raumfesten Würfel wird stattdessen eine Position im erfassten Raum beziehungsweise ein Anker benötigt.
-- Ein Objekt auf der Szenenwurzel bewegt sich nicht mit der XR-Kamera. Damit lässt sich Raumfestigkeit zunächst unabhängig von semantischer Tischerkennung prüfen.
-- Bei einem World-Space-Canvas auf der Szenenwurzel muss die `Anchored Position` des `RectTransform` korrekt gesetzt werden. Nur die allgemeine Transform-Position zu ändern kann dazu führen, dass Unity X/Y wieder aus den Canvas-Ankern berechnet.
-- Der praktische Sichttest ist unverzichtbar: Technisch plausible Koordinaten reichen nicht aus, um Größe, Lesbarkeit und wahrgenommene Position im Headset zu beurteilen.
-- Play-Mode-Tests im Editor ersetzen keinen Quest-Gerätetest, sichern aber Objektstruktur und Laufzeiteigenschaften in wenigen Sekunden ab.
-- Bei vollständig deaktiviertem Domain- und Scene-Reload startet der Test Runner trotzdem in einer eigenen Testszene. Benötigte Projektszenen müssen daher im Test ausdrücklich geladen werden.
-- Ein modaler Speichern-Dialog kann einen automatisierten Testlauf blockieren. Vor Play-Mode-Tests muss die offene Projektszene gespeichert sein.
+- Die Render Scale von 0,8 verursachte auf der Quest sichtbar unscharfe beziehungsweise jitternde Kanten. Render Scale 1,0 mit 4x MSAA wurde auf dem Gerät als scharf bestätigt.
+- Ein Controller-Strahl darf nicht an einer allgemeinen Hand-Hierarchie hängen, wenn er ausschließlich den rechten Touch-Controller repräsentieren soll. Ein eigener Aim-Knoten unter dem Tracking Space trennt Pose und Darstellungszustand sauber.
+- Ein zur Laufzeit gesuchter URP-Unlit-Shader war in der Android-Build nicht enthalten und erzeugte eine magentafarbene Fehlerdarstellung. Ein bereits sicher referenzierter URP/Lit-Shader vermeidet dieses Shader-Stripping-Problem.
+- Der Controller-Strahl wird am nächsten gültigen Treffer verkürzt. Das vermittelt besser, welches Objekt oder welcher Punkt tatsächlich ausgewählt wird.
+- Ein `OVROverlayCanvas` benötigt einen eigenen versteckten Szenen-Layer. Den allgemeinen `Default`-Layer aus der Kamera-Maske zu entfernen wäre falsch, weil dadurch auch normale Szenenobjekte verschwinden könnten.
+- Für das statische Schild verwendet das Overlay Depth-Tested-Komposition, Opaque-with-Clip, manuelles Redraw und automatisch erzeugte Mipmaps. Dadurch wird das Schild nicht unnötig in jedem Frame neu gerendert.
+
+### Platzierung
+
+- Meilenstein 3 verwendet bewusst den kalibrierten Floor-Level-Ursprung und eine geometrische Bodenebene. Das ist noch keine semantische MRUK-Erkennung.
+- Eine grüne Vorschau zeigt vor dem Auslösen, wo der Würfel platziert wird. Beim Platzieren wird die halbe Würfelhöhe berücksichtigt, damit seine Unterkante statt seines Mittelpunkts auf dem Boden liegt.
+- Nach einer Transform-Änderung können Collider-Grenzen im selben Testschritt noch veraltet sein. `Physics.SyncTransforms()` stellt sicher, dass der Test die aktuelle Position bewertet.
+- Eine Reset-Funktion gehört früh in eine interaktive Testumgebung. Sie beschleunigt wiederholbare Gerätetests und verhindert, dass ein ungünstig platziertes Objekt den Versuch blockiert.
 
 ## Aktueller Stand
 
 Erreicht:
 
-- GitHub-Repository und lokaler Clone vorhanden.
-- Erste Commits auf `main` vorhanden.
-- Feature-Branch `feature/quest-bootstrap` erstellt und veröffentlicht.
-- Unity-Projekt strukturiert.
-- Quest 3 als Entwicklungsgerät verbunden.
-- Quest-/OpenXR-Grundkonfiguration fehlerfrei kompiliert.
-- Erste Development-Build mit 0 Fehlern erzeugt und auf der Quest 3 installiert.
-- Eigene Anwendung auf der Quest 3 gestartet.
-- Passthrough und virtuelle Testmeldung im Headset sichtbar.
-- Quest-Bootstrap praktisch nachgewiesen.
-- Erster virtueller Würfel bleibt bei Kopfbewegungen stabil im Raum.
-- Raumfeste Beschriftung steht lesbar über dem Würfel.
-- Zwei automatisierte Play-Mode-Tests bestehen im Unity Editor.
-- Fast Enter Play Mode ist ohne Domain- und Scene-Reload aktiviert.
+- Meilensteine 0 bis 3 vollständig umgesetzt und praktisch nachgewiesen.
+- Fünf Play-Mode-Tests bestanden.
+- Letzte Android-Build mit 0 Fehlern erstellt, installiert und einschließlich Overlay auf der Quest getestet.
+- Controller-Strahl, Bewegung, Bodenplatzierung und Reset funktionieren.
+- README, Lernjournal, Entscheidungen und Testprotokoll auf den allgemeinen Template-/Lernzweck ausgerichtet.
 
-Noch nicht praktisch nachgewiesen:
+Noch offen:
 
-- Tisch erkannt und Würfel platziert.
-- Semantische Labels ausgelesen.
+- Änderungen auf `feature/controller-input` committen und veröffentlichen.
+- Pull Request nach `main` erstellen und mergen.
+- MRUK-Raumdaten und semantisches Label `TABLE` praktisch auslesen.
 
 ## Nächster einzelner Lernschritt
 
-Den bestandenen Teststand auf `feature/table-cube-placement` committen. Danach wird die feste Testposition durch eine Platzierung auf einer semantisch erkannten Tischfläche ersetzt.
+Den vollständigen Diff von Meilenstein 3 prüfen und nur die fachlich relevanten Dateien committen. Nach dem Pull Request beginnt Meilenstein 4 auf einem neuen Branch.
 
 ## Vorlage für neue Einträge
 

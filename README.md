@@ -1,76 +1,85 @@
 # QuestTableLab
 
-QuestTableLab ist mein Lern- und Prototypingprojekt für Mixed Reality auf der Meta Quest 3. Ich möchte damit nicht nur eine funktionierende Anwendung bauen, sondern den gesamten Weg bewusst nachvollziehbar machen: von meinen ersten aktiv genutzten Git- und GitHub-Grundlagen über räumliche Erkennung bis zu einer einfachen AR-gestützten Wartungs- und Reparaturbegleitung.
+QuestTableLab ist meine Lern- und Testumgebung für Mixed Reality auf der Meta Quest 3. In diesem Projekt erarbeite ich mir einen nachvollziehbaren Grundaufbau für weitere AR-/MR-Projekte: Git und GitHub, Unity und OpenXR, Passthrough, räumliche Interaktion, semantische Raumlabels und später eine allgemein nutzbare Grundlage für Objektzuordnungen.
+
+Das Projekt ist ausdrücklich **noch nicht** der spätere 3D-gedruckte Wartungsprototyp. Wenn diese Grundlage stabil ist, möchte ich daraus ein bereinigtes Template ableiten. Das Praktikumsprojekt mit eigenem physischen Prototyp, Teileerkennung sowie Wartungs- und Reparaturbegleitung entsteht anschließend als separates Projekt auf dieser Basis.
 
 ## Meine Ausgangslage
 
-Ich habe bereits eigene Prototypen mit Unity umgesetzt. GitHub hatte ich zuvor jedoch hauptsächlich zum Herunterladen fremder Projekte verwendet, nicht als Versionsverwaltung für meine eigene tägliche Arbeit.
+Ich habe bereits eigene Unity-Prototypen umgesetzt. GitHub hatte ich zuvor jedoch hauptsächlich zum Herunterladen fremder Projekte verwendet, nicht als Versionsverwaltung für meine tägliche Arbeit.
 
-Mit diesem Projekt verbinde ich deshalb zwei Lernziele:
+Mit QuestTableLab verbinde ich deshalb zwei Lernziele:
 
 - Git und GitHub praktisch und strukturiert einsetzen.
-- Eine Mixed-Reality-Anwendung für die Meta Quest 3 von Grund auf entwickeln und auf dem realen Gerät testen.
+- Eine wiederverwendbare Mixed-Reality-Grundlage für die Meta Quest 3 entwickeln und auf dem realen Gerät prüfen.
 
-Das bewusste Arbeiten mit Repository, Branches, kleinen Commits, Dokumentation und überprüfbaren Zwischenständen ist damit ebenso Teil des Projekts wie die eigentliche XR-Anwendung.
+Repository, Branches, kleine Commits, Pull Requests, Dokumentation und überprüfbare Zwischenstände gehören damit genauso zum Projekt wie die XR-Anwendung selbst.
 
 ## Projektziel
 
-Mein erstes kleines Ziel ist eine Quest-Anwendung, in der ich durch Passthrough meine reale Umgebung sehe, eine Tischfläche erkenne und einen virtuellen Würfel darauf platzieren kann.
+In der ersten Ausbaustufe kann ich durch Passthrough meine reale Umgebung sehen, virtuelle Inhalte raumfest darstellen und einen Würfel mit dem rechten Controller bewegen, auf dem kalibrierten Fußboden platzieren und zurücksetzen.
 
 Darauf aufbauend möchte ich:
 
-1. semantische Labels der erfassten Umgebung auslesen und sichtbar machen,
-2. virtuelle Inhalte passenden realen Flächen oder Objekten zuweisen,
-3. einen eigenen einfachen, nicht funktionalen Prototyp konstruieren und in 3D drucken,
-4. dessen Bauteile innerhalb einer MR-Anwendung unterscheiden,
-5. eine geführte Wartungs- oder Reparaturabfolge am Prototyp darstellen.
+1. semantische Labels der Quest-Raumdaten auslesen,
+2. einen Würfel automatisch einer Fläche mit dem Label `TABLE` zuweisen,
+3. ein Schild automatisch an einer `WALL_FACE` platzieren und seinen Abstand beziehungsweise Versatz konfigurierbar machen,
+4. manuelle Steuerung und automatische semantische Platzierung miteinander verbinden,
+5. eine konfigurierbare Zuordnung zwischen erkannten Kategorien und virtuellen Objekten schaffen,
+6. die stabile, allgemeine Grundlage als Template für spätere AR-/MR-Projekte aufbereiten.
 
-Die Quest-eigene semantische Raumerkennung und die Erkennung individueller Bauteile sind dabei nicht dasselbe. Für den späteren Prototyp werde ich deshalb untersuchen, ob räumliche Anker, Marker, Modellabgleich oder ein eigenes Erkennungsverfahren geeignet sind.
+Die semantische Raumerkennung der Quest und die Erkennung individueller, selbst gebauter Bauteile sind unterschiedliche Aufgaben. Eine prototypspezifische Teileerkennung bleibt daher Bestandteil des späteren Praktikumsprojekts; QuestTableLab bereitet dafür eine erweiterbare technische Basis vor.
 
-## Lern- und Entwicklungsphasen
+## Meilensteine
 
-| Phase | Inhalt | Geplanter Nachweis |
+| Meilenstein | Inhalt | Status |
 |---|---|---|
-| 0 | Git, GitHub und Projektstruktur | Kleine Commits, Feature-Branch und nachvollziehbare Dokumentation |
-| 1 | Quest-Grundaufbau | Anwendung lässt sich auf der Quest 3 installieren und starten |
-| 2 | Würfel auf dem Tisch | Reale Tischfläche wird erkannt und ein Würfel darauf platziert |
-| 3 | Semantische Labels | Erkannte Raumkategorien werden ausgelesen und visualisiert |
-| 4 | Eigener 3D-Druck-Prototyp | Reale Bauteile werden virtuellen Informationen zugeordnet |
-| 5 | Wartungsbegleitung | Eine kurze Wartungs- oder Reparatursequenz kann vollständig durchlaufen werden |
+| 0 | Voraussetzungen: Unity, Android-Werkzeuge, Developer-Konto und Quest-Verbindung | Abgeschlossen |
+| 1 | Repository, Unity-Projekt, Git-Arbeitsweise und Dokumentation | Abgeschlossen |
+| 2 | Erste Quest-App: Build, Installation, Passthrough und sichtbarer virtueller Inhalt | Abgeschlossen |
+| 3 | Manuelle Platzierung: Controller-Strahl, Verschieben, Fußbodenplatzierung und Reset | Abgeschlossen |
+| 4 | Semantische Raumerkennung: `TABLE` und anschließend `WALL_FACE` über MRUK | Als Nächstes |
+| 5 | Konfigurierbare Zuordnung semantischer Kategorien und Abschluss der Template-Grundlage | Geplant |
 
 ## Aktueller Stand
 
-Stand: **15. September 2026, 08:48 CEST**
+Stand: **15. September 2026, 12:24 CEST**
 
-Der technische Quest-Grundaufbau ist vorbereitet:
+Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
 
-- Unity **6000.3.24f1 (Unity 6.3 LTS)** mit Universal Render Pipeline
-- Android Build Support mit SDK, NDK und OpenJDK
-- Meta Quest 3 im Developer Mode mit aktiviertem USB-Debugging
-- Android als Build-Ziel, ARM64, mindestens Android API 32
-- Unity OpenXR und Meta OpenXR
-- Meta XR Core SDK, Interaction SDK und MR Utility Kit
-- vorbereitete Funktionen für Passthrough, Ebenen, Raycasts, Anker und Meshing
-- eigener Android-Paketname `com.christophdorn.questtablelab`
+- Unity **6000.3.24f1** mit Universal Render Pipeline
+- Android/ARM64, OpenXR und Meta-XR-Pakete
+- Passthrough und raumfeste virtuelle Inhalte
+- einzelner Strahl am rechten Controller
+- visuelles Trigger-Feedback; Ausblenden bei aktiver Handsteuerung
+- Verkürzung des Strahls an Würfel und kalibriertem Fußboden
+- Würfel per Trigger aufnehmen, verschieben und loslassen
+- grüne Platzierungsvorschau auf dem Fußboden
+- Würfel per Trigger mit seiner Unterkante auf den Fußboden setzen
+- Reset von Position und Rotation über die B-Taste
+- Render Scale 1,0 und 4x MSAA für eine auf dem Gerät bestätigte scharfe Darstellung
+- Meta XR Simulator sowie Meta XR Operator mit OpenXR API Layer für ergänzende Entwicklungs- und Agententests
+- aktivierte Scene-Unterstützung mit automatischer Berechtigungsanfrage beim Start
+- aktiviertes Application SpaceWarp als optionale Meta-Performancefunktion
+- `OVROverlayCanvas` für das raumfeste Schild mit getrennten Render-Layern
+- fünf bestandene Play-Mode-Tests
+- erfolgreiche Android-Build, Installation und abschließender Overlay-Smoke-Test auf der Quest 3
 
-Die Konfiguration kompiliert fehlerfrei und die Quest 3 wird vom Entwicklungsrechner erkannt. Eine erste eigene Development-Build wurde erfolgreich erzeugt, auf der Quest installiert und gestartet. Passthrough sowie die virtuelle Meldung `HELLO QUESTTABLELAB` wurden im Headset sichtbar bestätigt. Damit ist der vollständige Quest-Bootstrap praktisch nachgewiesen.
-
-Die Testmeldung ist für diesen ersten Nachweis bewusst an der XR-Kamera befestigt und folgt deshalb der Kopfbewegung. Die raumfeste Platzierung beginnt im nächsten Meilenstein mit der Erkennung einer Tischfläche und einem darauf platzierten Würfel.
-
-Die aktuelle Entwicklungsarbeit liegt auf dem Branch `feature/quest-bootstrap`. `main` bleibt vorerst der stabile Ausgangspunkt.
+Die aktuelle Arbeit liegt auf `feature/controller-input`. Sie ist noch nicht committed. Nach Dokumentations- und Diff-Prüfung wird der Meilenstein committed, veröffentlicht und per Pull Request in `main` übernommen.
 
 ## Technische Basis
 
 | Bereich | Verwendung |
 |---|---|
 | Engine | Unity 6000.3.24f1 |
-| Rendering | Universal Render Pipeline (URP) |
+| Template | Universal 3D (URP) |
 | Zielgerät | Meta Quest 3 |
 | Zielplattform | Android, ARM64 |
 | XR-Laufzeit | OpenXR mit Meta-Quest-Unterstützung |
+| Raumverständnis | Meta MR Utility Kit (ab Meilenstein 4) |
 | Versionsverwaltung | Git und GitHub |
 
-Der optionale Meta XR Simulator gehört derzeit nicht zu meinem erforderlichen Testweg. Ich teste auf der physisch angeschlossenen Quest 3.
+Der Meta XR Simulator und Meta XR Operator sind als zusätzliche Entwicklungswerkzeuge eingerichtet. Der verbindliche Nachweis für räumliche Interaktion, Darstellung und Tracking bleibt trotzdem der praktische Test auf der physischen Quest 3.
 
 ## Projektstruktur
 
@@ -85,26 +94,28 @@ Assets/App/
 └── UI/
 ```
 
-Von Unity oder den XR-Paketen erzeugte Inhalte bleiben davon getrennt. Temporäre lokale Unity-Verzeichnisse wie `Library`, `Temp` und `Logs` werden nicht mit Git versioniert.
+Von Unity oder XR-Paketen erzeugte Inhalte bleiben davon getrennt. Temporäre lokale Verzeichnisse wie `Library`, `Temp` und `Logs` werden nicht mit Git versioniert.
 
 ## Arbeitsweise
 
-Ich entwickle das Projekt in kleinen, überprüfbaren Schritten. Jeder Meilenstein soll möglichst diese Abfolge durchlaufen:
+Jeder Meilenstein durchläuft möglichst denselben Weg:
 
 1. ein klar begrenztes Lernziel festlegen,
-2. die Änderung auf einem passenden Branch umsetzen,
-3. Kompilierung und Verhalten prüfen,
-4. Ergebnis und Probleme dokumentieren,
-5. einen verständlich benannten Commit erstellen.
+2. auf einem passenden Feature-Branch umsetzen,
+3. schnelle Play-Mode-Tests ausführen,
+4. eine Development-Build auf der Quest praktisch prüfen,
+5. Ergebnis, Fehler und Entscheidungen dokumentieren,
+6. einen verständlich benannten Commit erstellen,
+7. den Stand per Pull Request prüfen und in `main` übernehmen.
 
-Ich führe die praktischen Einrichtungsschritte und Git-Aktionen selbst aus. Technische Recherche, wiederholbare Prüfungen und klar abgegrenzte Implementierungsarbeiten delegiere ich teilweise an Codex als Worker. Im Lernjournal halte ich fest, wer welchen Anteil ausgeführt hat. So bleibt sichtbar, was ich selbst gelernt und gemacht habe und wobei ich Werkzeugunterstützung eingesetzt habe.
+Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen selbst aus. Technische Implementierung, wiederholbare Prüfungen, Builds und Fehleranalyse delegiere ich teilweise an Codex. Im Lernjournal ist festgehalten, wer welchen Anteil ausgeführt hat.
 
 ## Dokumentation
 
-- [Lernjournal und Gesamtfahrplan](Documentation/LERNJOURNAL.md) – Lernziele, Zeitverlauf, eigene Arbeit, delegierte Aufgaben und Learnings
-- [Technische Entscheidungen](Documentation/ENTSCHEIDUNGEN.md) – gewählte Technik und Begründungen
-- [Testprotokoll](Documentation/TESTPROTOKOLL.md) – praktische Tests mit Erwartung und beobachtetem Ergebnis
+- [Lernjournal und Verlauf](Documentation/LERNJOURNAL.md)
+- [Technische Entscheidungen](Documentation/ENTSCHEIDUNGEN.md)
+- [Testprotokoll](Documentation/TESTPROTOKOLL.md)
 
-## Nächster Meilenstein
+## Nächster Schritt
 
-Als Nächstes sichere ich den bestandenen Bootstrap im Feature-Branch und führe ihn nach einer Prüfung per Pull Request in `main` zusammen. Danach beginne ich auf einem neuen Branch mit der Tischflächenerkennung und der raumfesten Würfelplatzierung.
+Zuerst wird Meilenstein 3 auf `feature/controller-input` gesichert und per Pull Request in `main` übernommen. Danach beginnt Meilenstein 4 auf einem neuen Branch mit MRUK-Raumdaten und der Erkennung einer semantisch als `TABLE` klassifizierten Fläche.
