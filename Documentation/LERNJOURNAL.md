@@ -1,6 +1,6 @@
 # Lernjournal: Von Git-Grundlagen zum AR-Wartungsprototyp
 
-Stand: 2026-09-14 13:03 CEST  
+Stand: 2026-09-15 08:48 CEST  
 Projekt: QuestTableLab  
 Zielgerät: Meta Quest 3
 
@@ -37,6 +37,7 @@ Der Lernerfolg wird deshalb nicht nur an funktionierendem Code gemessen. Ebenso 
 - Commits in GitHub Desktop erstellt.
 - Feature-Branch erstellt und mit `Publish branch` auf GitHub veröffentlicht.
 - Fehlermeldungen und unerwartete Zustände mit Screenshots gemeldet und vor dem Fortfahren geprüft.
+- Die installierte Anwendung im Headset praktisch geprüft und Passthrough sowie die sichtbare Meldung bestätigt.
 
 ### An Codex/Worker delegiert
 
@@ -52,6 +53,8 @@ Der Lernerfolg wird deshalb nicht nur an funktionierendem Code gemessen. Ebenso 
 - Unity-Kompilierung, Konsolenzustand, Android-Zielplattform, SDK-Stufen, ARM64 und Geräteverbindung technisch kontrollieren.
 - Fehlgeschlagene Background Tasks untersuchen und als optionalen Meta-XR-Simulator einordnen.
 - Lernjournal, Gesamtfahrplan und Verlinkung im README erstellen und fortlaufend pflegen.
+- Eine minimale Passthrough-Szene mit XR-Kamera und schwebender Testmeldung erstellen.
+- Die erste Android-Build erzeugen, auf der Quest installieren, starten und technisch über OpenXR- und Android-Laufzeitdaten prüfen.
 
 ### Gemeinsam entschieden oder überprüft
 
@@ -61,6 +64,7 @@ Der Lernerfolg wird deshalb nicht nur an funktionierendem Code gemessen. Ebenso 
 - Der optionale Meta-XR-Simulator wird vorerst nicht weiterverfolgt, weil direkt auf der physischen Quest 3 getestet werden kann.
 - Application SpaceWarp und Meta-Platform-Dienste sind für den ersten Prototyp nicht erforderlich.
 - Die Arbeit wird künftig in einzelnen, überprüfbaren Schritten fortgesetzt.
+- Für den Bootstrap ist eine an der Kamera befestigte Meldung sinnvoll, weil sie beim ersten Start sicher sichtbar ist. Raumfeste Inhalte werden erst im nächsten Meilenstein umgesetzt.
 
 ## Lernphasen und Erfolgskriterien
 
@@ -141,6 +145,8 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-14 12:59 | Christoph | Quest-/OpenXR-Grundkonfiguration committed | Android-, OpenXR- und Meta-XR-Basis auf dem Feature-Branch gespeichert. | Commit `9bb4aa1` |
 | 2026-09-14, ca. 13:00 | Christoph | Branch veröffentlicht | Lokaler Feature-Branch wurde mit `Publish branch` auf GitHub verfügbar gemacht. | `origin/feature/quest-bootstrap` |
 | 2026-09-14 ab 13:03 | Codex, von Christoph delegiert | Lernjournal begonnen und erweitert | Technische Arbeit, Lernziel und Arbeitsaufteilung werden gemeinsam nachvollziehbar. | Diese Datei |
+| 2026-09-15 08:24–08:38 | Codex, von Christoph delegiert | Erste Passthrough-Anwendung gebaut und ausgeliefert | XR-Kamera, Passthrough und Testmeldung eingerichtet; Android-Build mit 0 Fehlern erzeugt, installiert und gestartet. | Test 001 |
+| 2026-09-15 08:48 | Christoph | Ersten Mixed-Reality-Gerätetest bestätigt | Reale Umgebung und `HELLO QUESTTABLELAB` im Headset sichtbar; Meldung folgt erwartungsgemäß der Kamera. | Test 001 bestanden |
 
 ## Bisherige Learnings
 
@@ -165,6 +171,8 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Fehlermeldungen werden nach ihrer tatsächlichen Auswirkung bewertet. Der fehlgeschlagene optionale Meta-XR-Simulator blockiert Tests auf der physisch angeschlossenen Quest 3 nicht.
 - Eine erfolgreiche Paketinstallation ist noch kein erfolgreicher Prototyp. Der nächste relevante Beweis ist eine installierte und gestartete Build auf dem Zielgerät.
 - Entscheidungen und Irrwege werden dokumentiert, weil sie Teil des Lernergebnisses sind und spätere Projekte beschleunigen.
+- Der erste IL2CPP-/ARM64-Build kann wegen der einmaligen nativen Übersetzung aller XR-Abhängigkeiten deutlich länger dauern als spätere Builds.
+- Ein kameragebundenes UI bleibt stets im Sichtfeld und bewegt sich mit dem Kopf. Für einen raumfesten Würfel wird stattdessen eine Position im erfassten Raum beziehungsweise ein Anker benötigt.
 
 ## Aktueller Stand
 
@@ -176,17 +184,19 @@ Erreicht:
 - Unity-Projekt strukturiert.
 - Quest 3 als Entwicklungsgerät verbunden.
 - Quest-/OpenXR-Grundkonfiguration fehlerfrei kompiliert.
+- Erste Development-Build mit 0 Fehlern erzeugt und auf der Quest 3 installiert.
+- Eigene Anwendung auf der Quest 3 gestartet.
+- Passthrough und virtuelle Testmeldung im Headset sichtbar.
+- Quest-Bootstrap praktisch nachgewiesen.
 
 Noch nicht praktisch nachgewiesen:
 
-- Android-Build auf der Quest 3 installiert und gestartet.
-- Passthrough in der Anwendung sichtbar.
 - Tisch erkannt und Würfel platziert.
 - Semantische Labels ausgelesen.
 
 ## Nächster einzelner Lernschritt
 
-Eine minimale Mixed-Reality-Szene erstellen, auf die Quest 3 bauen und dort starten. Dieser Schritt soll zunächst nur den technischen Weg **Unity → Android-Build → Quest → sichtbares Passthrough** beweisen. Die Tisch- und Würfelplatzierung folgt erst nach diesem Nachweis.
+Den bestandenen Bootstrap als eigenen Commit sichern, den Feature-Branch per Pull Request nach `main` zusammenführen und anschließend die Tisch- und Würfelplatzierung auf einem neuen Feature-Branch beginnen.
 
 ## Vorlage für neue Einträge
 

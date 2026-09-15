@@ -40,7 +40,7 @@ Die Quest-eigene semantische Raumerkennung und die Erkennung individueller Baute
 
 ## Aktueller Stand
 
-Stand: **15. September 2026**
+Stand: **15. September 2026, 08:48 CEST**
 
 Der technische Quest-Grundaufbau ist vorbereitet:
 
@@ -53,7 +53,9 @@ Der technische Quest-Grundaufbau ist vorbereitet:
 - vorbereitete Funktionen für Passthrough, Ebenen, Raycasts, Anker und Meshing
 - eigener Android-Paketname `com.christophdorn.questtablelab`
 
-Die Konfiguration kompiliert fehlerfrei und die Quest 3 wird vom Entwicklungsrechner erkannt. Noch nicht praktisch nachgewiesen sind die Installation einer eigenen Build auf dem Gerät, sichtbares Passthrough und die Platzierung des Würfels. Das ist der nächste Meilenstein.
+Die Konfiguration kompiliert fehlerfrei und die Quest 3 wird vom Entwicklungsrechner erkannt. Eine erste eigene Development-Build wurde erfolgreich erzeugt, auf der Quest installiert und gestartet. Passthrough sowie die virtuelle Meldung `HELLO QUESTTABLELAB` wurden im Headset sichtbar bestätigt. Damit ist der vollständige Quest-Bootstrap praktisch nachgewiesen.
+
+Die Testmeldung ist für diesen ersten Nachweis bewusst an der XR-Kamera befestigt und folgt deshalb der Kopfbewegung. Die raumfeste Platzierung beginnt im nächsten Meilenstein mit der Erkennung einer Tischfläche und einem darauf platzierten Würfel.
 
 Die aktuelle Entwicklungsarbeit liegt auf dem Branch `feature/quest-bootstrap`. `main` bleibt vorerst der stabile Ausgangspunkt.
 
@@ -105,4 +107,4 @@ Ich führe die praktischen Einrichtungsschritte und Git-Aktionen selbst aus. Tec
 
 ## Nächster Meilenstein
 
-Als Nächstes erstelle ich eine minimale Mixed-Reality-Szene, baue sie für Android und starte sie auf meiner Quest 3. Der erste Gerätetest soll ausschließlich beweisen, dass der Weg von Unity über die Installation bis zum sichtbaren Passthrough funktioniert. Erst danach ergänze ich Tischflächenerkennung und Würfelplatzierung.
+Als Nächstes sichere ich den bestandenen Bootstrap im Feature-Branch und führe ihn nach einer Prüfung per Pull Request in `main` zusammen. Danach beginne ich auf einem neuen Branch mit der Tischflächenerkennung und der raumfesten Würfelplatzierung.
