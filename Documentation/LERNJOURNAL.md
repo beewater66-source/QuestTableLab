@@ -150,6 +150,8 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-15, vormittags | Christoph | Pull Request #1 gemergt und Bootstrap-Branch auf GitHub gelöscht | Der geprüfte Quest-Bootstrap wurde in `main` übernommen; die abgeschlossene Arbeitslinie wurde aufgeräumt. | Merge-Commit `d93dd39` |
 | 2026-09-15 09:13–09:27 | Codex, von Christoph delegiert | Raumfesten Testwürfel und raumfeste Beschriftung umgesetzt, gebaut und ausgeliefert | 20-cm-Würfel sowie World-Space-Canvas außerhalb der XR-Kamera angelegt; drei inkrementelle Android-Builds erstellt und installiert. | Test 002 |
 | 2026-09-15 09:28 | Christoph | Raumfeste Darstellung im Headset bestätigt | Würfel bleibt auch bei schnellen Kopfbewegungen stabil; die korrigierte Beschriftung steht gut lesbar über ihm. | Test 002 bestanden |
+| 2026-09-15, vormittags | Christoph | Beschriftung im Unity Editor manuell feinjustiert | Schriftgröße, Panelgröße und räumliche Position wurden anhand des Geräteeindrucks verbessert. | Szenenänderung auf `feature/table-cube-placement` |
+| 2026-09-15 10:10–10:16 | Codex, von Christoph delegiert | Erste automatisierte Play-Mode-Tests eingerichtet | Tests prüfen Raumwurzel, Pose des Würfels, World-Space-Canvas und visuelle Nähe der Beschriftung; 2 von 2 Tests bestanden. | Test 003 |
 
 ## Bisherige Learnings
 
@@ -179,6 +181,9 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Ein Objekt auf der Szenenwurzel bewegt sich nicht mit der XR-Kamera. Damit lässt sich Raumfestigkeit zunächst unabhängig von semantischer Tischerkennung prüfen.
 - Bei einem World-Space-Canvas auf der Szenenwurzel muss die `Anchored Position` des `RectTransform` korrekt gesetzt werden. Nur die allgemeine Transform-Position zu ändern kann dazu führen, dass Unity X/Y wieder aus den Canvas-Ankern berechnet.
 - Der praktische Sichttest ist unverzichtbar: Technisch plausible Koordinaten reichen nicht aus, um Größe, Lesbarkeit und wahrgenommene Position im Headset zu beurteilen.
+- Play-Mode-Tests im Editor ersetzen keinen Quest-Gerätetest, sichern aber Objektstruktur und Laufzeiteigenschaften in wenigen Sekunden ab.
+- Bei vollständig deaktiviertem Domain- und Scene-Reload startet der Test Runner trotzdem in einer eigenen Testszene. Benötigte Projektszenen müssen daher im Test ausdrücklich geladen werden.
+- Ein modaler Speichern-Dialog kann einen automatisierten Testlauf blockieren. Vor Play-Mode-Tests muss die offene Projektszene gespeichert sein.
 
 ## Aktueller Stand
 
@@ -196,6 +201,8 @@ Erreicht:
 - Quest-Bootstrap praktisch nachgewiesen.
 - Erster virtueller Würfel bleibt bei Kopfbewegungen stabil im Raum.
 - Raumfeste Beschriftung steht lesbar über dem Würfel.
+- Zwei automatisierte Play-Mode-Tests bestehen im Unity Editor.
+- Fast Enter Play Mode ist ohne Domain- und Scene-Reload aktiviert.
 
 Noch nicht praktisch nachgewiesen:
 

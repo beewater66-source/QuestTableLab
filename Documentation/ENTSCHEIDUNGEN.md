@@ -28,3 +28,9 @@ Die erste Würfelstufe verwendet bewusst eine feste Weltposition auf der Szenenw
 Die Beschriftung wird ebenfalls als World-Space-Canvas auf der Szenenwurzel platziert. Sie ist damit dem Würfel visuell zugeordnet, ohne dauerhaft im Sichtfeld zu stören.
 
 Diese feste Position ist nur ein Zwischenschritt. Im folgenden Schritt soll die Anwendung eine semantisch als Tisch klassifizierte Fläche aus den Quest-Raumdaten bestimmen und Würfel sowie Beschriftung relativ zu dieser Fläche platzieren.
+
+## 2026-09-15 – Fast Enter Play Mode als Projektstandard
+
+Für schnelle lokale Iterationen werden Domain Reload und Scene Reload beim Eintritt in den Play Mode deaktiviert. Play-Mode-Tests laden ihre benötigte Projektszene deshalb ausdrücklich und dürfen nicht von einem impliziten Szenenreset abhängen.
+
+Dieser Geschwindigkeitsvorteil bringt Verantwortung mit sich: Statische Felder, abonnierte Events und veränderte Laufzeitobjekte werden bei zukünftigen Funktionen bewusst zurückgesetzt. Bei schwer nachvollziehbaren XR-Zuständen wird ein Test mit vollständigem Reload als Kontrolllauf verwendet.

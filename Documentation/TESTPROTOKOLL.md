@@ -75,3 +75,33 @@ Der vollständige Weg von der Unity-Szene über Android-Build und Installation b
 **Ergebnis: BESTANDEN**
 
 Die raumfeste Darstellung eines einfachen virtuellen Objekts und einer zugeordneten Beschriftung ist auf der Quest 3 praktisch nachgewiesen. Eine semantische Tischfläche oder ein persistenter Raumanker wird in diesem Test noch nicht verwendet.
+
+### Test 003 – Automatisierte Play-Mode-Prüfung
+
+| Feld | Eintrag |
+|---|---|
+| Ausgeführt | 2026-09-15 10:10–10:16 CEST |
+| Git-Branch | `feature/table-cube-placement` |
+| Ausgangscommit | `102e607` (`feat: add room-fixed cube and label`) |
+| Unity-Version | 6000.3.24f1 |
+| Testumgebung | Unity Editor, Play Mode |
+| Fast Enter Play Mode | Domain Reload und Scene Reload deaktiviert |
+| Ausgeführt von | Testentwurf, Implementierung und Ausführung: Codex; Fast-Reload-Entscheidung und manuelle Schildanpassung: Christoph Dorn |
+
+**Geprüft**
+
+- `RoomFixedTestCube` existiert auf der Szenenwurzel und besitzt die erwartete Pose und Skalierung.
+- `HelloPanel` existiert auf der Szenenwurzel, verwendet einen World-Space-Canvas und bleibt oberhalb sowie in visueller Nähe des Würfels.
+
+**Beobachteter Lernverlauf**
+
+- Ein erster Compilerfehler im Vektorvergleich wurde korrigiert.
+- Ein erster Lauf wurde durch einen Speichern-Dialog blockiert und abgebrochen.
+- Ein Lauf ohne explizites Laden von `SampleScene` schlug mit 0 von 2 Tests fehl, weil der Test Runner eine eigene leere Testszene verwendet.
+- Nach Wiederherstellung des expliziten Szenenladens bestand zunächst 1 von 2 Tests.
+- Die verbleibende Abweichung stammte aus Christophs bewusster manueller Schildpositionierung. Der Test wurde auf die fachliche Anforderung „visuell nahe am Würfel“ ausgerichtet.
+- Abschließend bestanden 2 von 2 Tests in 1,35 Sekunden.
+
+**Ergebnis: BESTANDEN**
+
+Milestone 2 besitzt nun neben dem praktischen Quest-Nachweis eine schnelle automatisierte Editor-Prüfung.
