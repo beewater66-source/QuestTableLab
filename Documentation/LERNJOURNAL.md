@@ -1,6 +1,6 @@
 # Lernjournal: QuestTableLab als AR-/MR-Grundlage
 
-Stand: 2026-09-15 12:52 CEST
+Stand: 2026-09-15 15:21 CEST
 Projekt: QuestTableLab  
 Zielgerät: Meta Quest 3
 
@@ -72,11 +72,11 @@ Der rechte Controller besitzt einen eindeutigen Zielstrahl. Der Würfel lässt s
 
 ### Meilenstein 4 – Semantische Raumlabels
 
-MRUK stellt Raumdaten bereit. Die Anwendung erkennt `TABLE`, unterscheidet geometrische Treffer von semantischer Bedeutung und platziert den Würfel relativ zur Tischfläche. Der Gerätetest war auf beiden erfassten Tischen erfolgreich. Das Schild wird automatisch an einer geeigneten `WALL_FACE` platziert; sein Versatz und Wandabstand bleiben konfigurierbar. Nach Korrektur der Canvas-Ausrichtung bestand auch dieser Gerätetest. **In Arbeit; flächengebundene Replatzierung folgt.**
+MRUK stellt Raumdaten bereit. Die Anwendung erkennt `TABLE`, unterscheidet geometrische Treffer von semantischer Bedeutung und platziert den Würfel relativ zur Tischfläche. Das Schild wird automatisch an einer geeigneten `WALL_FACE` platziert. Beide Objekte lassen sich innerhalb ihrer semantischen Fläche bewegen und beim Ziehen direkt einem anderen passenden Anker zuweisen. Die vollständige Interaktion wurde auf der Quest 3 bestätigt. **Abgeschlossen.**
 
 ### Meilenstein 5 – Konfigurierbare Zuordnung und Template-Basis
 
-Semantische Kategorien und virtuelle Inhalte werden über eine verständliche Konfiguration verbunden. Grenzen und Fehlerfälle sind dokumentiert. Anschließend kann aus dem bereinigten Stand ein wiederverwendbares Template für neue Quest-AR-Projekte entstehen. **Geplant.**
+Semantische Kategorien und virtuelle Inhalte werden über eine verständliche Konfiguration verbunden. Eine per rechtem Stick-Klick schaltbare Diagnoseansicht zeigt bereits die erkannten Kategorien und Flächengrenzen im Raum. Anschließend kann aus dem bereinigten Stand ein wiederverwendbares Template für neue Quest-AR-Projekte entstehen. **In Arbeit.**
 
 ## Zeitlicher Verlauf
 
@@ -108,6 +108,8 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 | 2026-09-15 ca. 14:10–14:20 | Codex, von Christoph delegiert | Ersten Ankerwechsel umgesetzt und im Editor geprüft | Zunächst wechselten A und rechter Stick zyklisch durch gültige `TABLE`- beziehungsweise `WALL_FACE`-Anker. 13 von 13 Play-Mode-Tests, Android-Build und Installation bestanden. Der anschließende Gerätetest zeigte, dass blindes Durchschalten räumlich unverständlich ist. |
 | 2026-09-15 ca. 14:22–14:39 | Gemeinsam | Ankerwechsel als räumliches Drag-and-Drop neu gefasst | Christoph präzisierte die gewünschte Interaktion: Das gegriffene Objekt soll beim Zeigen auf eine andere reale Fläche deren semantischen Anker übernehmen. Codex ersetzte die Tastenbelegung durch direkte MRUK-Raum-Raycasts auf Tischoberseiten und Wandflächen; 13 von 13 Play-Mode-Tests, Android-Build und Installation bestanden. |
 | 2026-09-15 ca. 14:40 | Christoph | Direkten semantischen Flächenwechsel bestätigt | Würfel und Schild übernahmen beim Ziehen auf eine andere passende reale Fläche automatisch den tatsächlich anvisierten `TABLE`- beziehungsweise `WALL_FACE`-Anker. Smoke-Test bestanden. |
+| 2026-09-15 ca. 14:45–15:00 | Christoph | Meilenstein 4 per Pull Request #4 abgeschlossen | Semantische Platzierung in `main` übernommen; beim anschließenden Branchwechsel wurde ein veraltetes lokales `main` erkannt, aktualisiert und der neue Branch kontrolliert mit dem Merge-Stand verbunden. |
+| 2026-09-15 15:00–15:21 | Gemeinsam | Semantische Diagnoseansicht umgesetzt und auf der Quest geprüft | Codex implementierte farbige Grenzen und raumorientierte Labeltexte für MRUK-Anker sowie den Toggle über den rechten Stick-Klick. 15 von 15 Play-Mode-Tests und Android-Build `build_41377d06778d` bestanden; Christoph bestätigte Darstellung und Umschaltung im Headset. |
 
 ## Zentrale Learnings
 
@@ -147,28 +149,27 @@ Alle Zeiten sind lokale Zeit in Deutschland (CEST). Git-bestätigte Zeitpunkte s
 - Eine gültige Wandposition garantiert noch keine sichtbare UI: MRUKs Wandnormale und die sichtbare Seite eines Unity-Canvas verwenden entgegengesetzte Vorwärtsrichtungen. Das Quest-Log half, Erkennungs- und Ausrichtungsfehler voneinander zu trennen.
 - Für flächengebundene Interaktion reicht eine semantische Startposition nicht. Jeder neue Controller-Zielpunkt wird in den lokalen Koordinatenraum des erkannten Ankers umgerechnet und dort einschließlich der Objektgröße begrenzt.
 - Zyklisches Umschalten ist bei räumlich verteilten Flächen zwar technisch einfach, aber ohne sichtbare Zuordnung unverständlich. Ein direkter Scene-API-Raycast verbindet die Controllerhandlung stattdessen mit der tatsächlich anvisierten realen Fläche.
+- Eine semantische Diagnoseebene sollte von der eigentlichen Objektlogik getrennt bleiben. Dadurch können erkannte Kategorien und Grenzen sichtbar gemacht werden, ohne Platzierung oder Interaktion zu verändern.
 
 ## Aktueller Stand
 
 Erreicht:
 
-- Meilensteine 0 bis 3 vollständig umgesetzt, per Pull Request #3 gemergt und praktisch nachgewiesen.
-- Milestone-4-Fassung mit MRUK sowie bestätigter `TABLE`- und `WALL_FACE`-Platzierung implementiert.
-- Zehn Play-Mode-Tests bestanden.
-- Android-Build `build_985d85fb85af` mit 0 Fehlern erstellt und auf der Quest installiert.
+- Meilensteine 0 bis 4 vollständig umgesetzt, zuletzt per Pull Request #4 gemergt und praktisch nachgewiesen.
+- Meilenstein 5 mit schaltbarer Visualisierung aller erkannten semantischen Raumanker begonnen.
+- 15 Play-Mode-Tests bestanden.
+- Android-Build `build_41377d06778d` mit 0 Fehlern erstellt und auf der Quest installiert.
 - Controller-Strahl, Bewegung, Bodenplatzierung und Reset funktionieren.
 - README, Lernjournal, Entscheidungen und Testprotokoll auf den allgemeinen Template-/Lernzweck ausgerichtet.
 
 Noch offen:
 
-- Würfel innerhalb seines erkannten Tisches kontrolliert replatzierbar machen.
-- Schild innerhalb seiner erkannten Wand kontrolliert replatzierbar machen.
-- Semantische Raumlabels per Stick-Klick ein- und ausblendbar visualisieren.
 - Virtuelle Inhalte über eine Konfiguration Labels wie `TABLE`, `COUCH` und `SCREEN` zuweisen.
+- Den abgeschlossenen Projektstand als bereinigtes, wiederverwendbares Unity-Template aufbereiten.
 
 ## Nächster einzelner Lernschritt
 
-Meilenstein 5 beginnen: Erkannte semantische Raumlabels und Flächengrenzen per rechtem Stick-Klick ein- und ausblendbar darstellen.
+Eine Konfiguration einführen, die semantische Labels wie `TABLE`, `COUCH` und `SCREEN` nachvollziehbar mit virtuellen Inhalten verbindet.
 
 ## Vorlage für neue Einträge
 

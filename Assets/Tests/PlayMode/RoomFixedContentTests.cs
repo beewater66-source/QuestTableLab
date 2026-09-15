@@ -166,6 +166,59 @@ namespace QuestTableLab.Tests.PlayMode
                 Is.False, "The placement controller must own loading so it can report precise failures.");
         }
 
+        [UnityTest]
+        public IEnumerator SemanticLabelVisualizerIsAuthoredAndHiddenByDefault()
+        {
+            yield return null;
+
+            GameObject semanticRoom = GameObject.Find("SemanticRoom");
+            SemanticLabelVisualizer visualizer = semanticRoom.GetComponent<SemanticLabelVisualizer>();
+
+            Assert.That(visualizer, Is.Not.Null);
+            Assert.That(visualizer.IsVisible, Is.False,
+                "Semantic outlines must remain opt-in so they do not obscure passthrough.");
+            Assert.That(GameObject.Find("SemanticLabelVisualization_Runtime"), Is.Null);
+        }
+
+        [UnityTest]
+        public IEnumerator SemanticLabelVisualizerBuildsLabelsForRoomAnchors()
+        {
+            yield return null;
+
+            SemanticLabelVisualizer visualizer =
+                Object.FindFirstObjectByType<SemanticLabelVisualizer>();
+            GameObject roomObject = new("SemanticVisualizationTestRoom");
+            MRUKRoom room = roomObject.AddComponent<MRUKRoom>();
+            CreateTestAnchor(
+                room,
+                "VisualizedTable",
+                MRUKAnchor.SceneLabels.TABLE,
+                new Vector3(0f, 0.8f, 1f),
+                hasVolume: true);
+            CreateTestWall(
+                room,
+                "VisualizedWall",
+                new Vector3(0f, 1f, 2f),
+                Quaternion.Euler(0f, 180f, 0f));
+
+            try
+            {
+                visualizer.ShowRoom(room);
+
+                Assert.That(visualizer.IsVisible, Is.True);
+                Assert.That(visualizer.VisibleAnchorCount, Is.EqualTo(2));
+                GameObject root = GameObject.Find("SemanticLabelVisualization_Runtime");
+                Assert.That(root, Is.Not.Null);
+                Assert.That(root.transform.Find("SemanticLabel_TABLE/Label"), Is.Not.Null);
+                Assert.That(root.transform.Find("SemanticLabel_WALL_FACE/Label"), Is.Not.Null);
+            }
+            finally
+            {
+                visualizer.SetVisible(false);
+                Object.DestroyImmediate(roomObject);
+            }
+        }
+
         [Test]
         public void SemanticTableSelectionUsesNearestSuitableTableVolume()
         {

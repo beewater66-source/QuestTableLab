@@ -38,14 +38,14 @@ Der Schwerpunkt liegt auf einer verständlichen, erweiterbaren technischen Basis
 | 1 | Repository, Unity-Projekt, Git-Arbeitsweise und Dokumentation | Abgeschlossen |
 | 2 | Erste Quest-App: Build, Installation, Passthrough und sichtbarer virtueller Inhalt | Abgeschlossen |
 | 3 | Manuelle Platzierung: Controller-Strahl, Verschieben, Fußbodenplatzierung und Reset | Abgeschlossen |
-| 4 | Semantische Raumerkennung: `TABLE` und anschließend `WALL_FACE` über MRUK | In Arbeit |
-| 5 | Konfigurierbare Zuordnung semantischer Kategorien und Abschluss der Template-Grundlage | Geplant |
+| 4 | Semantische Raumerkennung: `TABLE` und anschließend `WALL_FACE` über MRUK | Abgeschlossen |
+| 5 | Konfigurierbare Zuordnung semantischer Kategorien und Abschluss der Template-Grundlage | In Arbeit |
 
 ## Aktueller Stand
 
-Stand: **15. September 2026, 12:52 CEST**
+Stand: **15. September 2026, 15:21 CEST**
 
-Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
+Die Meilensteine 0 bis 4 sind auf der Meta Quest 3 praktisch bestanden:
 
 - Unity **6000.3.24f1** mit Universal Render Pipeline
 - Android/ARM64, OpenXR und Meta-XR-Pakete
@@ -62,7 +62,7 @@ Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
 - aktivierte Scene-Unterstützung mit automatischer Berechtigungsanfrage beim Start
 - aktiviertes Application SpaceWarp als optionale Meta-Performancefunktion
 - `OVROverlayCanvas` für das raumfeste Schild mit getrennten Render-Layern
-- zehn bestandene Play-Mode-Tests
+- 15 bestandene Play-Mode-Tests
 - erfolgreiche Android-Build und Installation der ersten MRUK-/Scene-API-Fassung
 - automatische Suche nach dem nächstgelegenen geeigneten `TABLE`-Volumen
 - verständliche Statusmeldungen für fehlende Berechtigung, fehlendes Space Setup und fehlendes Tisch-Label
@@ -70,8 +70,9 @@ Meilenstein 3 ist auf der Meta Quest 3 praktisch bestanden:
 - automatische Auswahl einer zum Benutzer gerichteten `WALL_FACE` für das Schild; horizontaler und vertikaler Versatz sowie Wandabstand sind konfigurierbar
 - Controller-Replatzierung von Würfel und Schild mit Begrenzung auf die jeweils erkannte Tisch- beziehungsweise Wandfläche
 - direkter Ankerwechsel per Drag-and-Drop: Beim Ziehen auf eine andere erkannte Fläche übernimmt das Objekt automatisch deren `TABLE`- beziehungsweise `WALL_FACE`-Anker
+- ein- und ausschaltbare Diagnoseansicht mit farbigen Flächengrenzen und Bezeichnungen aller erkannten semantischen Raumanker
 
-Meilenstein 3 wurde über Pull Request #3 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-table-placement`. Die semantische Tischplatzierung wurde auf zwei realen, im Space Setup erfassten Tischen erfolgreich bestätigt. Nach Korrektur der Canvas-Ausrichtung wurde auch die automatische Wandplatzierung des Schilds auf der Quest erfolgreich geprüft.
+Meilenstein 4 wurde über Pull Request #4 in `main` übernommen. Die aktuelle Arbeit liegt auf `feature/semantic-label-mapping`. Tisch- und Wandplatzierung, direkter Flächenwechsel sowie die per rechtem Stick-Klick schaltbare Labelansicht sind auf der Quest 3 praktisch bestätigt.
 
 ## Technische Basis
 
@@ -124,4 +125,4 @@ Ich führe die Geräteprüfung, die praktische Bewertung und die Git-Aktionen se
 
 ## Nächster Schritt
 
-Die flächengebundene Replatzierung und der direkte Wechsel auf einen tatsächlich anvisierten `TABLE`- oder `WALL_FACE`-Anker wurden auf der Quest 3 praktisch bestätigt. Als Nächstes folgt in Meilenstein 5 eine ein- und ausschaltbare Visualisierung der erkannten Raumlabels sowie eine konfigurierbare Zuordnung virtueller Inhalte zu diesen Labels.
+Die ein- und ausschaltbare Visualisierung erkannter Raumlabels und ihrer Flächengrenzen wurde auf der Quest 3 praktisch bestätigt. Als Nächstes folgt die konfigurierbare Zuordnung virtueller Inhalte zu Labels wie `TABLE`, `COUCH` und `SCREEN`.

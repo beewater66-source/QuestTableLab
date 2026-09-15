@@ -573,7 +573,7 @@ public sealed class SemanticTablePlacementController : MonoBehaviour
         string wallStatus = SelectedWall != null ? "WALL_FACE erkannt" : "keine WALL_FACE gefunden";
         SetStatus(
             PlacementState.TableFound,
-            $"TABLE + {wallStatus}\nTrigger: auf andere Fläche ziehen\nB: Reset");
+            $"TABLE + {wallStatus}\nTrigger: Fläche wechseln | B: Reset\nR-Stick: Raumlabels");
     }
 
     private static string GetAnchorId(MRUKAnchor anchor) =>
