@@ -2,7 +2,9 @@
   "name": "QuestTableLab.Runtime",
   "rootNamespace": "QuestTableLab",
   "references": [
-    "Oculus.VR"
+    "Oculus.VR",
+    "meta.xr.mrutilitykit",
+    "Unity.ugui"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

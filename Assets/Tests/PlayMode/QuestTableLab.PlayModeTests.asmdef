@@ -2,7 +2,8 @@
   "name": "QuestTableLab.PlayModeTests",
   "rootNamespace": "QuestTableLab.Tests.PlayMode",
   "references": [
-    "QuestTableLab.Runtime"
+    "QuestTableLab.Runtime",
+    "meta.xr.mrutilitykit"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

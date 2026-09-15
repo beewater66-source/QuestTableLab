@@ -84,3 +84,17 @@ Scene Support und die automatische Laufzeit-Berechtigungsanfrage sind aktiviert,
 Das raumfeste `HelloPanel` verwendet `OVROverlayCanvas`, damit Text durch den Quest-Compositor klarer dargestellt werden kann. Für das statische Schild gelten Metas Textvorgaben: Depth-Tested-Komposition, Opaque-with-Clip, manuelles Redraw, deaktivierte dynamische Overlay-Auflösung und automatisch erzeugte Mipmaps.
 
 Der authored Canvas und seine Inhalte liegen auf dem eigenen versteckten Layer `Overlay UI`. Dieser Layer wird aus den Culling Masks der XR-Kameras entfernt; normale Szenengeometrie auf `Default` bleibt sichtbar. Ein separater temporärer Layer `OVROverlayCanvas Rendering` ist für die interne Overlay-Ausgabe reserviert und in den URP-Renderer-Masken enthalten.
+
+## 2026-09-15 – Scene API über MRUK bewusst und diagnostizierbar laden
+
+Die Quest Scene API ist die Quelle des im Space Setup gespeicherten Raummodells und seiner semantischen Labels. MRUK 205.0.0 wird als Unity-Abstraktion verwendet, um diese Daten zu laden und als Raum- beziehungsweise Objektanker abzufragen. Das ist von einer späteren visuellen Erkennung individueller Prototypbauteile zu unterscheiden.
+
+Der Anwendungscode stößt das Laden bewusst selbst an, statt MRUK ohne Rückmeldung beim Start laden zu lassen. Dadurch kann das Schild zwischen fehlender Raumfreigabe, fehlendem Space Setup, fehlendem `TABLE`-Label und allgemeinen Ladefehlern unterscheiden. Für komplexere Räume wird zunächst das High-Fidelity-Modell V2 mit Rückfall auf V1 angefordert.
+
+Als erste Regel wird das nächstgelegene geeignete `TABLE`-Volumen gewählt. MRUK definiert die Position eines Volumenankers als Mittelpunkt seiner Oberseite; die halbe Höhe des Würfel-Colliders plus ein kleiner Sicherheitsabstand ergibt daher die Zielposition. Die bestehende manuelle Platzierung bleibt aktiv, und ihr Reset-Ziel wird nach erfolgreicher semantischer Platzierung aktualisiert.
+
+## 2026-09-15 – Auswahl und Positionierung des WALL_FACE-Schilds
+
+Die Tischwahl bleibt positionsbezogen: Das horizontal nächstgelegene geeignete `TABLE`-Volumen gewinnt. Für ein Statusschild ist dagegen Sichtbarkeit wichtiger. Deshalb bevorzugt die Anwendung eine ebene `WALL_FACE` in Blickrichtung, deren Vorderseite zum Benutzer zeigt; als Rückfall wird die nächstgelegene zum Benutzer gerichtete Wand verwendet.
+
+Die Schildposition wird vom Mittelpunkt der erkannten Wandfläche aus über einen horizontalen und vertikalen Versatz bestimmt. Ein eigener Abstand hält das Schild geringfügig vor der realen Wand. Alle Werte sind im Inspector konfigurierbar, wobei die resultierende Position einschließlich Schildgröße innerhalb der Wandbegrenzung gehalten wird.

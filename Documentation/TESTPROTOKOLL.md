@@ -181,3 +181,80 @@ Meilenstein 3 ist damit praktisch abgeschlossen. Die Bodenplatzierung verwendet 
 **Ergebnis: BESTANDEN**
 
 Der vollständige Stand aus Project Setup, Overlay-Darstellung und bisheriger Controllerinteraktion ist damit im Editor und auf der Quest 3 nachgewiesen.
+
+### Test 006 – MRUK-Integration und semantische TABLE-Platzierung
+
+| Feld | Eintrag |
+|---|---|
+| Vorbereitet | 2026-09-15 12:24–12:52 CEST |
+| Git-Branch | `feature/semantic-table-placement` |
+| Ausgangscommit | `599d4db` (Merge von Pull Request #3) |
+| Unity-Version | 6000.3.24f1 |
+| MRUK-Version | 205.0.0 |
+| Zielgerät | Meta Quest 3 |
+| Testarten | Play Mode, Android-Build, Installation und räumlicher Headset-Test |
+| Ausgeführt von | Implementierung, Tests, Build und Installation: Codex; räumliche Sichtprüfung: Christoph Dorn |
+
+**Geprüft und umgesetzt**
+
+- MRUK lädt Scene-API-Daten explizit vom Gerät und kann dadurch konkrete Fehlerzustände melden.
+- Die Auswahl berücksichtigt nur Anker mit dem semantischen Label `TABLE` und gültigem Volumen.
+- Bei mehreren Tischen wird horizontal der dem Benutzer nächstgelegene gewählt.
+- Der Würfel wird mit seiner Unterkante auf die von MRUK definierte Tischoberkante gesetzt.
+- Nach erfolgreicher Platzierung führt die B-Taste zur semantischen Tischposition zurück.
+- Fehlende Raumfreigabe, fehlendes Space Setup und fehlendes `TABLE`-Label erhalten verständliche Meldungen.
+
+**Automatisiertes Ergebnis**
+
+- 8 von 8 Play-Mode-Tests bestanden, einschließlich simulierter Auswahl aus nahen, fernen, falsch gelabelten und geometrisch ungeeigneten Ankern.
+- Android-Build `build_985d85fb85af` bestand in 140,8 Sekunden mit 0 Fehlern und 7 bekannten Hinweisen.
+- APK-Größe: 65.180.177 Byte.
+- APK erfolgreich auf der verbundenen Quest 3 installiert und bis zur OpenXR-Initialisierung für Meta Quest 3 gestartet.
+- Das Manifest enthält `USE_SCENE` und `USE_ANCHOR_API`.
+
+**Räumliches Ergebnis**
+
+Christoph bestätigte die Platzierung auf beiden im Space Setup erfassten Tischen. Je nach Benutzerposition wurde jeweils der horizontal nächstgelegene geeignete Tisch gewählt. Die Auswahl ist damit semantisch und positionsbezogen; sie richtet sich nicht nach dem aktuellen Sichtfeld.
+
+**Ergebnis: BESTANDEN**
+
+### Test 007 – Automatische WALL_FACE-Platzierung des Schilds
+
+| Feld | Eintrag |
+|---|---|
+| Datum | 2026-09-15 |
+| Branch | `feature/semantic-table-placement` |
+| Unity-Version | 6000.3.24f1 |
+| MRUK-Version | 205.0.0 |
+| Zielgerät | Meta Quest 3 |
+| Testarten | Play Mode, Android-Build und Installation; räumlicher Sichttest folgt |
+| Ausgeführt von | Implementierung und Play-Mode-Tests: Codex; räumliche Sichtprüfung: Christoph Dorn |
+
+**Geprüft und umgesetzt**
+
+- Es werden nur gültige `WALL_FACE`-Anker mit ebener Begrenzung berücksichtigt.
+- Bevorzugt wird eine Wand in Blickrichtung, deren Vorderseite zum Benutzer zeigt; andernfalls dient die nächstgelegene zum Benutzer gerichtete Wand als Rückfall.
+- Horizontaler und vertikaler Versatz sowie der Abstand vor der Wand sind im Inspector einstellbar.
+- Die Zielposition wird so begrenzt, dass das Schild einschließlich seiner Größe innerhalb der erkannten Wandfläche bleibt.
+- Die bestehende `OVROverlayCanvas`-Darstellung wird weiterverwendet.
+
+**Automatisiertes Ergebnis**
+
+- 10 von 10 Play-Mode-Tests bestanden.
+- Keine Kompilierfehler und keine neuen Console-Fehler.
+- Android-Build `build_1c002570b394` in 157 Sekunden mit 0 Fehlern und 7 bekannten Warnungen erfolgreich erstellt.
+- APK erfolgreich auf der verbundenen Quest 3 installiert.
+
+**Zwischenergebnis: ERSTER SICHTTEST NICHT BESTANDEN**
+
+**Erster räumlicher Sichttest und Korrektur**
+
+Der Gerätetest bestätigte über das Quest-Log einen gültigen `WALL_FACE`-Anker und eine berechnete Schildposition. Das Schild selbst war jedoch nicht sichtbar. Ursache war die unterschiedliche Vorwärtsdefinition: Die MRUK-Wandnormale zeigt in den Raum, während die sichtbare Vorderseite des World-Space-Canvas auf der entgegengesetzten lokalen Seite liegt. Die Schildrotation wurde deshalb um 180 Grad korrigiert; ein erneuter Sichttest ist erforderlich.
+
+Die korrigierte Fassung bestand erneut 10 von 10 Play-Mode-Tests. Android-Build `build_66693d341d43` wurde in 111 Sekunden mit 0 Fehlern und 7 bekannten Warnungen erstellt und erfolgreich auf der Quest 3 installiert.
+
+**Abschließendes räumliches Ergebnis**
+
+Christoph bestätigte, dass das korrigierte Schild sichtbar und raumfest auf der erkannten Wand erscheint. Würfel, semantische Tischplatzierung und semantische Wandplatzierung funktionierten gemeinsam im selben Quest-Lauf.
+
+**Ergebnis: BESTANDEN**

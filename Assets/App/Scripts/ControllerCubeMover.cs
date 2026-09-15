@@ -140,6 +140,23 @@ public sealed class ControllerCubeMover : MonoBehaviour
         Debug.Log("[QuestTableLab] Cube reset to its initial pose.");
     }
 
+    /// <summary>
+    /// Replaces the pose used by the B-button reset. Semantic placement uses
+    /// this after a real table was found so reset returns to that table.
+    /// </summary>
+    public void SetResetPose(Vector3 position, Quaternion rotation, bool moveTarget = true)
+    {
+        initialPosition = position;
+        initialRotation = rotation;
+
+        if (moveTarget)
+        {
+            isMoving = false;
+            target.SetPositionAndRotation(initialPosition, initialRotation);
+            Physics.SyncTransforms();
+        }
+    }
+
     public void PlaceTargetOnFloor(Vector3 floorPoint)
     {
         isMoving = false;
